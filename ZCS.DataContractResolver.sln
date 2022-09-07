@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZCS.DataContractResolver", "src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj", "{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZCS.DataContractResolver.Tests", "src\ZCS.DataContractResolver.Tests\ZCS.DataContractResolver.Tests.csproj", "{325C81B8-D6D7-48D9-82CA-14EA66D26C02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{FE5F9855-04C9-40DB-B633-7F32B925BC7C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		LICENSE = LICENSE
+		README.md = README.md
+		Versions.props = Versions.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F50DE904-F1A1-422B-9497-01DB8EF8D64E}
+	EndGlobalSection
+EndGlobal

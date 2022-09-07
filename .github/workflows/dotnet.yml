@@ -1,0 +1,53 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [ published ]    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: |
+          6.0.x
+          7.0.x
+        include-prerelease: true
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build -c Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore --logger "console;verbosity=normal"
+    - name: Pack
+      # Make sure pack works
+      run: dotnet pack --no-build -c Release --include-symbols --include-source -p:PackageVersion=0.0.1
+
+  deploy:
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+          include-prerelease: true
+      - name: Create NuGet Package
+        run: |
+          vertag=(${GITHUB_REF//\// })
+          VERSION="${vertag[2]}"
+          VERSION="${VERSION//v}"
+          dotnet pack -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg
+      - name: Push to NuGet.org
+        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
