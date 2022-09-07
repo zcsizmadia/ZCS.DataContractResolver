@@ -1,3 +1,7 @@
+Intro
+---
+System.Text.Json serializer does not support DataContact and DataMember attributes prior .NET 7.0. System.Text.Json v7.x+ supports custom type resolvers. This library adds support for DataContract and DataMember attributes using a custom resolver.
+
 Usage
 ---
 ```csharp
