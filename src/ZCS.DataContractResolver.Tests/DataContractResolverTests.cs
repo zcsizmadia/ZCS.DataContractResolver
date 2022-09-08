@@ -188,7 +188,7 @@ public class DataContractResolverTests
             TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
         };
 
-        string json = JsonSerializer.Serialize(obj, options);
+        string json = System.Text.Json.JsonSerializer.Serialize(obj, options);
         string jsonExpected = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
 
         Assert.That(json, Is.EqualTo(jsonExpected));
