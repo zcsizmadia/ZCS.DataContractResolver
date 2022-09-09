@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text.Json;
 using NUnit.Framework;
 
 namespace ZCS.DataContractResolver.Tests;
@@ -52,12 +51,29 @@ public class PersonContract
 }
 
 [DataContract]
+public class PersonContractMemberGetter
+{
+    [DataMember]
+    public string FullName { get; set; }
+
+    [DataMember]
+    public int Age { get; } = 21;
+}
+
+[DataContract]
 public class PersonContractWithNonPublicMember
 {
     [DataMember]
     public string FullName;
 
     [DataMember(EmitDefaultValue = false)]
+    protected int Age = 21;
+}
+
+[DataContract]
+public class PersonContractWithoutDataMember
+{
+    public string FullName;
     protected int Age = 21;
 }
 
@@ -129,6 +145,9 @@ public class DataContractResolverTests
         yield return new TestCaseData(new PersonWithNonPublicMember());
         yield return new TestCaseData(new PersonWithNonPublicMember() { FullName = "John Doe" });
 
+        yield return new TestCaseData(new PersonContractWithoutDataMember());
+        yield return new TestCaseData(new PersonContractWithoutDataMember() { FullName = "John Doe" });
+
         yield return new TestCaseData(new PersonWithIgnore());
         yield return new TestCaseData(new PersonWithIgnore() { FullName = "John Doe" });
         yield return new TestCaseData(new PersonWithIgnore() { Age = 21 });
@@ -149,6 +168,9 @@ public class DataContractResolverTests
         yield return new TestCaseData(new PersonContract() { Age = 21 });
         yield return new TestCaseData(new PersonContract() { FullName = "John Doe", Age = 21 });
 
+        yield return new TestCaseData(new PersonContractMemberGetter());
+        yield return new TestCaseData(new PersonContractMemberGetter() { FullName = "John Doe" });
+        
         yield return new TestCaseData(new PersonContractWithNonPublicMember());
         yield return new TestCaseData(new PersonContractWithNonPublicMember() { FullName = "John Doe" });
 
@@ -181,13 +203,14 @@ public class DataContractResolverTests
     }
 
     [TestCaseSource(nameof(TestCases))]
-    public void Tests(object obj)
+    public void Tests<T>(T obj)
     {
-        var options = new JsonSerializerOptions()
+        var options = new System.Text.Json.JsonSerializerOptions()
         {
             TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
         };
 
+        //Serialize
         string json = System.Text.Json.JsonSerializer.Serialize(obj, options);
         string jsonExpected = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
 

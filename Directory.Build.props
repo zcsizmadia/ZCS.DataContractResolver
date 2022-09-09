@@ -29,6 +29,7 @@
   <PropertyGroup>
     <Authors>Zoltan Csizmadia</Authors>
     <Owners>Zoltan Csizmadia</Owners>
+	<Description>Add DataContract and DataMember support to System.Text.Json.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Json, Serialization, System.Text.Json, DataContract</PackageTags>

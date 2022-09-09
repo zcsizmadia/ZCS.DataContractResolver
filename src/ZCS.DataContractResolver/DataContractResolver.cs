@@ -76,7 +76,7 @@ namespace System.Text.Json.Serialization.Metadata
 
                 if (memberInfo.MemberType == MemberTypes.Field)
                 {
-                    FieldInfo fieldInfo = (FieldInfo)memberInfo;
+                    FieldInfo fieldInfo = memberInfo as FieldInfo;
                     jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(fieldInfo.FieldType, attr?.Name ?? fieldInfo.Name);
                     jsonPropertyInfo.Get = fieldInfo.GetValue;
                     jsonPropertyInfo.Set = (obj, value) => fieldInfo.SetValue(obj, value);
@@ -84,7 +84,7 @@ namespace System.Text.Json.Serialization.Metadata
                 else
                 if (memberInfo.MemberType == MemberTypes.Property)
                 {
-                    PropertyInfo propertyInfo = (PropertyInfo)memberInfo;
+                    PropertyInfo propertyInfo = memberInfo as PropertyInfo;
                     jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(propertyInfo.PropertyType, attr?.Name ?? propertyInfo.Name);
                     jsonPropertyInfo.Get = propertyInfo.CanRead ? propertyInfo.GetValue : null;
                     jsonPropertyInfo.Set = propertyInfo.CanWrite ? (obj, value) => propertyInfo.SetValue(obj, value) : null;
@@ -104,13 +104,11 @@ namespace System.Text.Json.Serialization.Metadata
             }
         }
 
-        public JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+        public JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
         {
-            JsonTypeInfo jsonTypeInfo = JsonTypeInfo.CreateJsonTypeInfo(type, options);
-
             if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
             {
-                jsonTypeInfo.CreateObject = () => Activator.CreateInstance(type)!;
+                jsonTypeInfo.CreateObject = () => Activator.CreateInstance(jsonTypeInfo.Type)!;
 
                 foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
                 {
@@ -119,6 +117,13 @@ namespace System.Text.Json.Serialization.Metadata
             }
 
             return jsonTypeInfo;
+        }
+
+        public JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+        {
+            JsonTypeInfo jsonTypeInfo = JsonTypeInfo.CreateJsonTypeInfo(type, options);
+
+            return GetTypeInfo(jsonTypeInfo);
         }
     }
 }

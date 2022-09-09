@@ -22,7 +22,7 @@ public class Person
 }
 
 // Serialize with System.Text.Json
-var options = new JsonSerializerOptions()
+var options = new System.Text.Json.JsonSerializerOptions()
 {
     TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
 };
