@@ -12,22 +12,13 @@ namespace System.Text.Json.Serialization.Metadata
         private bool IsNullOrDefault(object obj)
         {
             if (obj is null)
+            {
                 return true;
+            }
 
             Type type = obj.GetType();
 
-            if (!type.IsValueType)
-            {
-                return false;
-            }
-
-            object defaultObj = Activator.CreateInstance(type);
-            if (defaultObj is null)
-            {
-                return false;
-            }
-
-            return defaultObj.Equals(obj);
+            return type.IsValueType ? FormatterServices.GetUninitializedObject(type).Equals(obj) : false;
         }
 
         private IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)

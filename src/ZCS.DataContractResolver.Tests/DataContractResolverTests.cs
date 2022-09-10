@@ -15,6 +15,7 @@ public class PersonWithNonPublicMember
 {
     public string FullName;
     protected int Age = 21;
+    private DateTime LastLogin = DateTime.Now;
 }
 
 public class PersonWithoutContractWithDataMember
@@ -68,6 +69,9 @@ public class PersonContractWithNonPublicMember
 
     [DataMember(EmitDefaultValue = false)]
     protected int Age = 21;
+
+    [DataMember(EmitDefaultValue = false)]
+    private DateTime LastLogin = DateTime.Now;
 }
 
 [DataContract]
@@ -132,6 +136,20 @@ public class PersonContractWithStruct
     [DataMember(EmitDefaultValue = false)]
     public DateTime LastLogin { get; set; }
 }
+
+[DataContract]
+public class PersonContractWithNullable
+{
+    [DataMember(EmitDefaultValue = false)]
+    public string FullName { get; set; }
+
+    [DataMember(EmitDefaultValue = false)]
+    public int? Age { get; set; }
+
+    [DataMember(EmitDefaultValue = false)]
+    public DateTime? LastLogin { get; set; }
+}
+
 
 public class DataContractResolverTests
 {
@@ -200,6 +218,12 @@ public class DataContractResolverTests
         yield return new TestCaseData(new PersonContractWithStruct() { Age = 21 });
         yield return new TestCaseData(new PersonContractWithStruct() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
         yield return new TestCaseData(new PersonContractWithStruct() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
+
+        yield return new TestCaseData(new PersonContractWithNullable());
+        yield return new TestCaseData(new PersonContractWithNullable() { FullName = "John Doe" });
+        yield return new TestCaseData(new PersonContractWithNullable() { Age = 21 });
+        yield return new TestCaseData(new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
+        yield return new TestCaseData(new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
     }
 
     [TestCaseSource(nameof(TestCases))]
