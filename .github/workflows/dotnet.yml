@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,34 +21,26 @@ jobs:
           6.0.x
           7.0.x
         include-prerelease: true
+
     - name: Install dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build -c Release --no-restore
+
     - name: Test
       run: dotnet test --no-restore --logger "console;verbosity=normal"
-    - name: Pack
-      # Make sure pack works
-      run: dotnet pack --no-build -c Release --include-symbols --include-source
 
-  deploy:
-    needs: build
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: |
-            6.0.x
-            7.0.x
-          include-prerelease: true
-      - name: Create NuGet Package
-        run: |
-          vertag=(${GITHUB_REF//\// })
-          VERSION="${vertag[2]}"
-          [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
-          dotnet pack -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg
-      - name: Push to NuGet.org
-        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
+    - name: Pack
+      run: |
+        vertag=(${GITHUB_REF//\// })
+        VERSION="${vertag[2]}"
+        [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
+        [ "$VERSION" ] || VERSION="0.1.0" # This should not happen if release
+        dotnet pack --no-build -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg
+
+    - name: Push to nuget.org
+      if: github.event_name == 'release'
+      run: |
+        [ "$VERSION" == "0.1.0" ] && (echo "Incorrect version! ($VERSION)" && exit 1)
+        dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
