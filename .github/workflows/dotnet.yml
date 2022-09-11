@@ -34,8 +34,9 @@ jobs:
     - name: Pack and push to nuget.org
       if: github.event_name == 'release'
       run: |
+        echo G=${GITHUB_REF}
         vertag=(${GITHUB_REF//\// })
         VERSION="${vertag[2]}"
         [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}" # Remove leading v
-        dotnet pack --no-build -c Release --include-symbols --include-source -p:PackageVersion="$VERSION" -o nupkg
+        dotnet pack -c Release --include-symbols --include-source -p:PackageVersion="$VERSION" -o nupkg
         dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
