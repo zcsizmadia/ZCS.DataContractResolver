@@ -36,7 +36,9 @@ jobs:
         vertag=(${GITHUB_REF//\// })
         VERSION="${vertag[2]}"
         [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
-        [ "$VERSION" ] || VERSION="0.1.0" # This should not happen if release
+        echo v=$VERSION
+        [ ! "$VERSION" ] && VERSION="0.1.0" # This should not happen if release
+        echo V=$VERSION
         dotnet pack --no-build -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg
 
     - name: Push to nuget.org
