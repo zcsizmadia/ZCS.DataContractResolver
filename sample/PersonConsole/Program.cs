@@ -1,4 +1,4 @@
-﻿// Serialize with System.Text.Json
+﻿using PersonConsole;
 
 var options = new JsonSerializerOptions()
 {
@@ -12,6 +12,7 @@ Person person = new()
     DoNotShow = "SECRET!"
 };
 
+// Serialize with System.Text.Json
 string json = JsonSerializer.Serialize(person, options);
 
 Console.WriteLine(json);

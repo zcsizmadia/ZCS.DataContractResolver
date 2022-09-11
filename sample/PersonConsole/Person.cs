@@ -1,3 +1,5 @@
+namespace PersonConsole;
+
 [DataContract]
 public class Person
 {

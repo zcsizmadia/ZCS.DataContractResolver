@@ -151,7 +151,7 @@ public class PersonContractWithNullable
 }
 public class DataContractResolverTests
 {
-    public static System.Collections.IEnumerable TestCases()
+    private static System.Collections.IEnumerable TestCases()
     {
         yield return new TestCaseData(new Person());
         yield return new TestCaseData(new Person() { FullName = "John Doe" });

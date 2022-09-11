@@ -18,7 +18,7 @@ namespace System.Text.Json.Serialization.Metadata
 
             Type type = obj.GetType();
 
-            return type.IsValueType ? FormatterServices.GetUninitializedObject(type).Equals(obj) : false;
+            return type.IsValueType && FormatterServices.GetUninitializedObject(type).Equals(obj);
         }
 
         private IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
