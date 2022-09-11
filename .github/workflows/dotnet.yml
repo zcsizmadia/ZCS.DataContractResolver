@@ -31,10 +31,12 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --logger "console;verbosity=normal"
 
+    - name: Debug
+      run: echo G=${GITHUB_REF}
+
     - name: Pack and push to nuget.org
       if: github.event_name == 'release'
       run: |
-        echo G=${GITHUB_REF}
         vertag=(${GITHUB_REF//\// })
         VERSION="${vertag[2]}"
         [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}" # Remove leading v
