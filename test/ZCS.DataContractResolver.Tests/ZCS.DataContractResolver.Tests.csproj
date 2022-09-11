@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj" />
+    <ProjectReference Include="..\..\src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj" />
   </ItemGroup>
 
 </Project>

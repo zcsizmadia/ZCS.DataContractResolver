@@ -1,8 +1,10 @@
 <Project>
 
-  <PropertyGroup Label="Versions">
+  <PropertyGroup Label="Frameworks">
     <ClassLibTargetFrameworks>netstandard2.0;net7.0</ClassLibTargetFrameworks>
     <TestTargetFrameworks>net6.0;net7.0</TestTargetFrameworks>
+
+	<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <!-- All projects will include the defined versions automatically -->

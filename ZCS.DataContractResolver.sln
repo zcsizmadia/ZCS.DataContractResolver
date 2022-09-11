@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZCS.DataContractResolver", "src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj", "{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZCS.DataContractResolver.Tests", "src\ZCS.DataContractResolver.Tests\ZCS.DataContractResolver.Tests.csproj", "{325C81B8-D6D7-48D9-82CA-14EA66D26C02}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{FE5F9855-04C9-40DB-B633-7F32B925BC7C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -15,6 +11,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 		README.md = README.md
 		Versions.props = Versions.props
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{ED8E482E-3272-4EF3-8600-DE69AD4FF095}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5E4D0D32-B48D-470A-8144-E356167F9474}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{7C12FF83-B88D-4B74-9B39-A371536904C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZCS.DataContractResolver", "src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj", "{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZCS.DataContractResolver.Tests", "test\ZCS.DataContractResolver.Tests\ZCS.DataContractResolver.Tests.csproj", "{325C81B8-D6D7-48D9-82CA-14EA66D26C02}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonConsole", "sample\PersonConsole\PersonConsole.csproj", "{34352E0B-6787-4EB2-8DEC-797B3F63F067}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherForecastWebApi", "sample\WeatherForecastWebApi\WeatherForecastWebApi.csproj", "{0A005D93-0DDE-4801-9717-D4FD761CDF12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,9 +40,23 @@ Global
 		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{325C81B8-D6D7-48D9-82CA-14EA66D26C02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34352E0B-6787-4EB2-8DEC-797B3F63F067}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34352E0B-6787-4EB2-8DEC-797B3F63F067}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34352E0B-6787-4EB2-8DEC-797B3F63F067}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34352E0B-6787-4EB2-8DEC-797B3F63F067}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A005D93-0DDE-4801-9717-D4FD761CDF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A005D93-0DDE-4801-9717-D4FD761CDF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A005D93-0DDE-4801-9717-D4FD761CDF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A005D93-0DDE-4801-9717-D4FD761CDF12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F3F0B53D-5743-4D1B-9C04-FE7B9E415C84} = {ED8E482E-3272-4EF3-8600-DE69AD4FF095}
+		{325C81B8-D6D7-48D9-82CA-14EA66D26C02} = {5E4D0D32-B48D-470A-8144-E356167F9474}
+		{34352E0B-6787-4EB2-8DEC-797B3F63F067} = {7C12FF83-B88D-4B74-9B39-A371536904C9}
+		{0A005D93-0DDE-4801-9717-D4FD761CDF12} = {7C12FF83-B88D-4B74-9B39-A371536904C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F50DE904-F1A1-422B-9497-01DB8EF8D64E}

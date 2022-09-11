@@ -29,7 +29,7 @@ var options = new System.Text.Json.JsonSerializerOptions()
 
 Person person = new Person();
 
-string json = System.Text.JsonJsonSerializer.Serialize(person, options);
+string json = System.Text.JsonSerializer.Serialize(person, options);
 ```
 
 License
