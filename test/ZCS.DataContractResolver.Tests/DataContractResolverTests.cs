@@ -15,7 +15,6 @@ public class PersonWithNonPublicMember
 {
     public string FullName;
     protected int Age = 21;
-    private DateTime LastLogin = DateTime.Now;
 }
 
 public class PersonWithoutContractWithDataMember
@@ -69,9 +68,6 @@ public class PersonContractWithNonPublicMember
 
     [DataMember(EmitDefaultValue = false)]
     protected int Age = 21;
-
-    [DataMember(EmitDefaultValue = false)]
-    private DateTime LastLogin = DateTime.Now;
 }
 
 [DataContract]
