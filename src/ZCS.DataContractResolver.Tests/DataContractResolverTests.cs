@@ -149,8 +149,6 @@ public class PersonContractWithNullable
     [DataMember(EmitDefaultValue = false)]
     public DateTime? LastLogin { get; set; }
 }
-
-
 public class DataContractResolverTests
 {
     public static System.Collections.IEnumerable TestCases()
@@ -234,7 +232,7 @@ public class DataContractResolverTests
             TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
         };
 
-        //Serialize
+        // Serialize
         string json = System.Text.Json.JsonSerializer.Serialize(obj, options);
         string jsonExpected = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
 

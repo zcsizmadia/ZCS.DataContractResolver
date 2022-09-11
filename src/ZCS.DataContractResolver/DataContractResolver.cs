@@ -63,7 +63,7 @@ namespace System.Text.Json.Serialization.Metadata
                     }
                 }
 
-                JsonPropertyInfo jsonPropertyInfo;
+                JsonPropertyInfo jsonPropertyInfo = null;
 
                 if (memberInfo.MemberType == MemberTypes.Field)
                 {
@@ -77,14 +77,16 @@ namespace System.Text.Json.Serialization.Metadata
                 {
                     PropertyInfo propertyInfo = memberInfo as PropertyInfo;
                     jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(propertyInfo.PropertyType, attr?.Name ?? propertyInfo.Name);
-                    jsonPropertyInfo.Get = propertyInfo.CanRead ? propertyInfo.GetValue : null;
-                    jsonPropertyInfo.Set = propertyInfo.CanWrite ? (obj, value) => propertyInfo.SetValue(obj, value) : null;
+                    if (propertyInfo.CanRead)
+                    {
+                        jsonPropertyInfo.Get = propertyInfo.GetValue;
+                    }
+                    if (propertyInfo.CanWrite)
+                    {
+                        jsonPropertyInfo.Set = (obj, value) => propertyInfo.SetValue(obj, value);
+                    }
                 }
-                else
-                {
-                    continue;
-                }
-
+                
                 if (attr != null)
                 {
                     jsonPropertyInfo.Order = attr.Order;

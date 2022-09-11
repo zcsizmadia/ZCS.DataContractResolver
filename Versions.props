@@ -1,11 +1,11 @@
 <Project>
   <PropertyGroup>
-	<SystemTextJsonVersion Condition=" '$(SystemTextJsonVersion)' == '' ">7.0.0-preview.*</SystemTextJsonVersion>
+	<SystemTextJsonVersion Condition=" '$(SystemTextJsonVersion)' == ''">7.0.0-preview.*</SystemTextJsonVersion>
 
-	<CoverletCollectorVersion Condition=" '$(CoverletCollectorVersion)' == '' ">3.1.*</CoverletCollectorVersion>
-    <MicrosoftNETTestSdkVersion Condition=" '$(MicrosoftNETTestSdkVersion)' == '' ">17.3.*</MicrosoftNETTestSdkVersion>
-    <NUnitVersion Condition=" '$(NUnitVersion)' == '' ">3.13.*</NUnitVersion>
-    <NUnit3TestAdapterVersion Condition=" '$(NUnit3TestAdapterVersion)' == '' ">4.2.*</NUnit3TestAdapterVersion>
-    <NUnitAnalyzersVersion Condition=" '$(NUnitAnalyzersVersion)' == '' ">3.3.*</NUnitAnalyzersVersion>
+	<CoverletCollectorVersion Condition=" '$(CoverletCollectorVersion)' == ''">3.1.*</CoverletCollectorVersion>
+	<MicrosoftNETTestSdkVersion Condition=" '$(MicrosoftNETTestSdkVersion)' == ''">17.3.*</MicrosoftNETTestSdkVersion>
+    <NUnitVersion Condition=" '$(NUnitVersion)' == ''">3.13.*</NUnitVersion>
+    <NUnit3TestAdapterVersion Condition=" '$(NUnit3TestAdapterVersion)' == ''">4.2.*</NUnit3TestAdapterVersion>
+    <NUnitAnalyzersVersion Condition=" '$(NUnitAnalyzersVersion)' == ''">3.3.*</NUnitAnalyzersVersion>
   </PropertyGroup>
 </Project>
