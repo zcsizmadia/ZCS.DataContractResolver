@@ -4,9 +4,14 @@
 		<PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Label="Dependencies">
+	<!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
+	
+	<PropertyGroup Label="Package Dependencies">
 		<SystemTextJsonVersion Condition="'$(SystemTextJsonVersion)' == ''">7.0.0-preview.*</SystemTextJsonVersion>
-        <CoverletCollectorVersion Condition="'$(CoverletCollectorVersion)' == ''">3.1.*</CoverletCollectorVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Build Dependencies">
+		<CoverletCollectorVersion Condition="'$(CoverletCollectorVersion)' == ''">3.1.*</CoverletCollectorVersion>
 		<MicrosoftNETTestSdkVersion Condition="'$(MicrosoftNETTestSdkVersion)' == ''">17.3.*</MicrosoftNETTestSdkVersion>
 		<NUnitVersion Condition="'$(NUnitVersion)' == ''">3.13.*</NUnitVersion>
 		<NUnit3TestAdapterVersion Condition="'$(NUnit3TestAdapterVersion)' == ''">4.2.*</NUnit3TestAdapterVersion>

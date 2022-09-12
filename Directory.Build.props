@@ -1,49 +1,51 @@
 <Project>
 
-  <PropertyGroup Label="Frameworks">
-    <ClassLibTargetFrameworks>netstandard2.0;net7.0</ClassLibTargetFrameworks>
-    <TestTargetFrameworks>net6.0;net7.0</TestTargetFrameworks>
-    <SampleTargetFramework>net7.0</SampleTargetFramework>
+    <PropertyGroup Label="Frameworks">
+        <ClassLibTargetFrameworks>netstandard2.0;net7.0</ClassLibTargetFrameworks>
+        <TestTargetFrameworks>net6.0;net7.0</TestTargetFrameworks>
+        <SampleTargetFramework>net7.0</SampleTargetFramework>
+    </PropertyGroup>
 
-	<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
-  </PropertyGroup>
+	<PropertyGroup>
+		<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+	</PropertyGroup>
 
-  <!-- All projects will include the defined versions automatically -->
-  <Import Project="Versions.props" />
+    <!-- All projects will include the defined versions automatically -->
+    <Import Project="Versions.props" />
 
-  <PropertyGroup Label="Versions">
-    <!-- Parse out parts of the version -->
-    <MajorVersion Condition="'$(MajorVersion)' == ''">$(PackageVersion.Split('.')[0])</MajorVersion>
-    <MinorVersion Condition="'$(MinorVersion)' == ''">$(PackageVersion.Split('.')[1])</MinorVersion>
-    <Patch Condition="'$(Patch)' == ''">$(PackageVersion.Split('-')[0].Split('.')[2])</Patch>
-    <BuildNumber Condition="'$(BuildNumber)' == ''">0</BuildNumber>
+    <PropertyGroup Label="Versions">
+        <!-- Parse out parts of the version -->
+        <MajorVersion Condition="'$(MajorVersion)' == ''">$(PackageVersion.Split('.')[0])</MajorVersion>
+        <MinorVersion Condition="'$(MinorVersion)' == ''">$(PackageVersion.Split('.')[1])</MinorVersion>
+        <Patch Condition="'$(Patch)' == ''">$(PackageVersion.Split('-')[0].Split('.')[2])</Patch>
+        <BuildNumber Condition="'$(BuildNumber)' == ''">0</BuildNumber>
     
-    <VersionPrefix Condition="'$(VersionPrefix)' == ''">$(MajorVersion).$(MinorVersion).$(Patch)</VersionPrefix>
-    <VersionSuffix Condition="'$(VersionSuffix)' == '' AND $(PackageVersion.Contains('-'))">$(PackageVersion.Split('-')[1])</VersionSuffix>
-    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
-    <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix).$(BuildNumber)</FileVersion>
-  </PropertyGroup>
+        <VersionPrefix Condition="'$(VersionPrefix)' == ''">$(MajorVersion).$(MinorVersion).$(Patch)</VersionPrefix>
+        <VersionSuffix Condition="'$(VersionSuffix)' == '' AND $(PackageVersion.Contains('-'))">$(PackageVersion.Split('-')[1])</VersionSuffix>
+        <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
+        <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix).$(BuildNumber)</FileVersion>
+        </PropertyGroup>
 
-  <!-- Common NuGet properties -->
-  <!-- Reference: https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target -->
-  <PropertyGroup>
-    <Authors>Zoltan Csizmadia</Authors>
-    <Owners>Zoltan Csizmadia</Owners>
-	<Description>Add DataContract and DataMember support to System.Text.Json.</Description>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Json, Serialization, System.Text.Json, DataContract</PackageTags>
-    <RepositoryUrl>https://github.com/zcsizmadia/ZCS.DataContractResolver</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/zcsizmadia/ZCS.DataContractResolver</PackageProjectUrl>
-    <!-- <Copyright></Copyright> -->
-    <!-- <PackageIconUrl></PackageIconUrl> -->
+        <!-- Common NuGet properties -->
+        <!-- Reference: https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target -->
+        <PropertyGroup>
+        <Authors>Zoltan Csizmadia</Authors>
+        <Owners>Zoltan Csizmadia</Owners>
+        <Description>Add DataContract and DataMember support to System.Text.Json.</Description>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Json, Serialization, System.Text.Json, DataContract</PackageTags>
+        <RepositoryUrl>https://github.com/zcsizmadia/ZCS.DataContractResolver</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/zcsizmadia/ZCS.DataContractResolver</PackageProjectUrl>
+        <!-- <Copyright></Copyright> -->
+        <!-- <PackageIconUrl></PackageIconUrl> -->
 
-    <!-- By default none of the projects are packable by "dotnet pack". Packable projects must set it to true! -->
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <!-- By default none of the projects are packable by "dotnet pack". Packable projects must set it to true! -->
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" Visible="false" PackagePath="" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    </ItemGroup>
 
 </Project>
