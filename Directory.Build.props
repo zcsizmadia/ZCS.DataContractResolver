@@ -1,11 +1,12 @@
 <Project>
-
   <PropertyGroup Label="Frameworks">
     <ClassLibTargetFrameworks>netstandard2.0;net7.0</ClassLibTargetFrameworks>
     <TestTargetFrameworks>net6.0;net7.0</TestTargetFrameworks>
     <SampleTargetFramework>net7.0</SampleTargetFramework>
+  </PropertyGroup>
 
-	<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+  <PropertyGroup>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <!-- All projects will include the defined versions automatically -->
@@ -29,7 +30,7 @@
   <PropertyGroup>
     <Authors>Zoltan Csizmadia</Authors>
     <Owners>Zoltan Csizmadia</Owners>
-	<Description>Add DataContract and DataMember support to System.Text.Json.</Description>
+    <Description>Add DataContract and DataMember support to System.Text.Json.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Json, Serialization, System.Text.Json, DataContract</PackageTags>
@@ -45,5 +46,4 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
-
 </Project>

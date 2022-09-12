@@ -1,23 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
-		<IsPackable>false</IsPackable>
-	</PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
+    <PackageReference Include="NUnit" Version="$(NUnitVersion)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterVersion)" />
+    <PackageReference Include="NUnit.Analyzers" Version="$(NUnitAnalyzersVersion)" />
+    <PackageReference Include="coverlet.collector" Version="$(CoverletCollectorVersion)">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
-		<PackageReference Include="NUnit" Version="$(NUnitVersion)" />
-		<PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterVersion)" />
-		<PackageReference Include="NUnit.Analyzers" Version="$(NUnitAnalyzersVersion)" />
-		<PackageReference Include="coverlet.collector" Version="$(CoverletCollectorVersion)">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj" />
-	</ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj" />
+  </ItemGroup>
 </Project>

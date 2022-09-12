@@ -2,14 +2,30 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace System.Text.Json.Serialization.Metadata
 {
     public class DataContractResolver : IJsonTypeInfoResolver
     {
-        public static DataContractResolver Default = new();
+        private static DataContractResolver s_defaultInstance;
 
-        private bool IsNullOrDefault(object obj)
+        public static DataContractResolver Default
+        {
+            get
+            {
+                if (s_defaultInstance is DataContractResolver result)
+                {
+                    return result;
+                }
+
+                DataContractResolver newInstance = new();
+                DataContractResolver originalInstance = Interlocked.CompareExchange(ref s_defaultInstance, newInstance, comparand: null);
+                return originalInstance ?? newInstance;
+            }
+        }
+
+        private static bool IsNullOrDefault(object obj)
         {
             if (obj is null)
             {
@@ -21,7 +37,7 @@ namespace System.Text.Json.Serialization.Metadata
             return type.IsValueType && FormatterServices.GetUninitializedObject(type).Equals(obj);
         }
 
-        private IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
+        private static IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
         {
             foreach (FieldInfo fieldInfo in type.GetFields(bindingFlags))
             {
@@ -34,7 +50,7 @@ namespace System.Text.Json.Serialization.Metadata
             }
         }
 
-        private IEnumerable<JsonPropertyInfo> CreateDataMembers(JsonTypeInfo jsonTypeInfo)
+        private static IEnumerable<JsonPropertyInfo> CreateDataMembers(JsonTypeInfo jsonTypeInfo)
         {
             bool isDataContract = jsonTypeInfo.Type.GetCustomAttribute<DataContractAttribute>() != null;
             BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public;
@@ -118,7 +134,7 @@ namespace System.Text.Json.Serialization.Metadata
             }
         }
 
-        public JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
+        public static JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
         {
             if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
             {
