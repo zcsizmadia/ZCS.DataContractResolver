@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>$(SampleTargetFramework)</TargetFramework>
-    <Nullable>enable</Nullable>
-	<ImplicitUsing>enable</ImplicitUsing>
-	<IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>$(SampleTargetFramework)</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsing>enable</ImplicitUsing>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ZCS.DataContractResolver\ZCS.DataContractResolver.csproj" />
+    </ItemGroup>
 
 </Project>
