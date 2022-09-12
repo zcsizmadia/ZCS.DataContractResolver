@@ -7,7 +7,7 @@ namespace System.Text.Json.Serialization.Metadata
 {
     public class DataContractResolver : IJsonTypeInfoResolver
     {
-        public static DataContractResolver Default = new DataContractResolver();
+        public static DataContractResolver Default = new();
 
         private bool IsNullOrDefault(object obj)
         {
@@ -18,7 +18,7 @@ namespace System.Text.Json.Serialization.Metadata
 
             Type type = obj.GetType();
 
-            return type.IsValueType ? FormatterServices.GetUninitializedObject(type).Equals(obj) : false;
+            return type.IsValueType && FormatterServices.GetUninitializedObject(type).Equals(obj);
         }
 
         private IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
@@ -63,29 +63,50 @@ namespace System.Text.Json.Serialization.Metadata
                     }
                 }
 
-                JsonPropertyInfo jsonPropertyInfo = null;
-
-                if (memberInfo.MemberType == MemberTypes.Field)
+                if (memberInfo == null)
                 {
-                    FieldInfo fieldInfo = memberInfo as FieldInfo;
-                    jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(fieldInfo.FieldType, attr?.Name ?? fieldInfo.Name);
-                    jsonPropertyInfo.Get = fieldInfo.GetValue;
-                    jsonPropertyInfo.Set = (obj, value) => fieldInfo.SetValue(obj, value);
+                    continue;
+                }
+
+                Func<object, object> getValue = null;
+                Action<object, object> setValue = null;
+                Type propertyType = null;
+                string propertyName = null;
+
+                if (memberInfo.MemberType == MemberTypes.Field && memberInfo is FieldInfo fieldInfo)
+                {
+                    propertyName = attr?.Name ?? fieldInfo.Name;
+                    propertyType = fieldInfo.FieldType;
+                    getValue = fieldInfo.GetValue;
+                    setValue = (obj, value) => fieldInfo.SetValue(obj, value);
                 }
                 else
-                if (memberInfo.MemberType == MemberTypes.Property)
+                if (memberInfo.MemberType == MemberTypes.Property && memberInfo is PropertyInfo propertyInfo)
                 {
-                    PropertyInfo propertyInfo = memberInfo as PropertyInfo;
-                    jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(propertyInfo.PropertyType, attr?.Name ?? propertyInfo.Name);
+                    propertyName = attr?.Name ?? propertyInfo.Name;
+                    propertyType = propertyInfo.PropertyType;
                     if (propertyInfo.CanRead)
                     {
-                        jsonPropertyInfo.Get = propertyInfo.GetValue;
+                        getValue = propertyInfo.GetValue;
                     }
                     if (propertyInfo.CanWrite)
                     {
-                        jsonPropertyInfo.Set = (obj, value) => propertyInfo.SetValue(obj, value);
+                        setValue = (obj, value) => propertyInfo.SetValue(obj, value);
                     }
                 }
+                else
+                {
+                    continue;
+                }
+
+                JsonPropertyInfo jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(propertyType, propertyName);
+                if (jsonPropertyInfo == null)
+                {
+                    continue;
+                }
+
+                jsonPropertyInfo.Get = getValue;
+                jsonPropertyInfo.Set = setValue;
                 
                 if (attr != null)
                 {

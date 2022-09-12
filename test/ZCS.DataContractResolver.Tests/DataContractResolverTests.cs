@@ -15,7 +15,6 @@ public class PersonWithNonPublicMember
 {
     public string FullName;
     protected int Age = 21;
-    private DateTime LastLogin = DateTime.Now;
 }
 
 public class PersonWithoutContractWithDataMember
@@ -69,9 +68,6 @@ public class PersonContractWithNonPublicMember
 
     [DataMember(EmitDefaultValue = false)]
     protected int Age = 21;
-
-    [DataMember(EmitDefaultValue = false)]
-    private DateTime LastLogin = DateTime.Now;
 }
 
 [DataContract]
@@ -151,7 +147,7 @@ public class PersonContractWithNullable
 }
 public class DataContractResolverTests
 {
-    public static System.Collections.IEnumerable TestCases()
+    private static System.Collections.IEnumerable TestCases()
     {
         yield return new TestCaseData(new Person());
         yield return new TestCaseData(new Person() { FullName = "John Doe" });
