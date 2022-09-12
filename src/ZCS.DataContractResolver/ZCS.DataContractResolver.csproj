@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(ClassLibTargetFrameworks)</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>$(ClassLibTargetFrameworks)</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="System.Text.Json" Version="$(SystemTextJsonVersion)" Condition="$(TargetFramework.StartsWith('netstandard'))"/>
-	</ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="$(SystemTextJsonVersion)" Condition="$(TargetFramework.StartsWith('netstandard'))"/>
+  </ItemGroup>
 </Project>
