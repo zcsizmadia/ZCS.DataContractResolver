@@ -7,7 +7,7 @@
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
 	
   <PropertyGroup Label="Package Dependencies">
-    <SystemTextJsonVersion Condition="'$(SystemTextJsonVersion)' == ''">7.0.0-preview.*</SystemTextJsonVersion>
+    <SystemTextJsonVersion Condition="'$(SystemTextJsonVersion)' == ''">7.0.0-rc.*</SystemTextJsonVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Build Dependencies">
