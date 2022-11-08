@@ -41,6 +41,7 @@
 
     <!-- By default none of the projects are packable by "dotnet pack". Packable projects must set it to true! -->
     <IsPackable>false</IsPackable>
+    <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
   </PropertyGroup>
 
   <ItemGroup>

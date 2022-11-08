@@ -7,14 +7,14 @@
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
 	
   <PropertyGroup Label="Package Dependencies">
-    <SystemTextJsonVersion Condition="'$(SystemTextJsonVersion)' == ''">7.0.0-rc.*</SystemTextJsonVersion>
+    <SystemTextJsonVersion Condition="'$(SystemTextJsonVersion)' == ''">7.0.0</SystemTextJsonVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Build Dependencies">
-    <CoverletCollectorVersion Condition="'$(CoverletCollectorVersion)' == ''">3.1.*</CoverletCollectorVersion>
-    <MicrosoftNETTestSdkVersion Condition="'$(MicrosoftNETTestSdkVersion)' == ''">17.3.*</MicrosoftNETTestSdkVersion>
+    <CoverletCollectorVersion Condition="'$(CoverletCollectorVersion)' == ''">3.2.*</CoverletCollectorVersion>
+    <MicrosoftNETTestSdkVersion Condition="'$(MicrosoftNETTestSdkVersion)' == ''">17.4.*</MicrosoftNETTestSdkVersion>
     <NUnitVersion Condition="'$(NUnitVersion)' == ''">3.13.*</NUnitVersion>
-    <NUnit3TestAdapterVersion Condition="'$(NUnit3TestAdapterVersion)' == ''">4.2.*</NUnit3TestAdapterVersion>
-    <NUnitAnalyzersVersion Condition="'$(NUnitAnalyzersVersion)' == ''">3.3.*</NUnitAnalyzersVersion>
+    <NUnit3TestAdapterVersion Condition="'$(NUnit3TestAdapterVersion)' == ''">4.3.*</NUnit3TestAdapterVersion>
+    <NUnitAnalyzersVersion Condition="'$(NUnitAnalyzersVersion)' == ''">3.5.*</NUnitAnalyzersVersion>
   </PropertyGroup>
 </Project>
