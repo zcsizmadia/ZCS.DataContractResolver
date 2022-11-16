@@ -1,18 +1,18 @@
 <Project>
   <PropertyGroup Label="Frameworks">
     <ClassLibTargetFrameworks>netstandard2.0;net7.0</ClassLibTargetFrameworks>
-    <TestTargetFrameworks>net6.0;net7.0</TestTargetFrameworks>
+    <TestTargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TestTargetFrameworks>
     <SampleTargetFramework>net7.0</SampleTargetFramework>
-  </PropertyGroup>
 
-  <PropertyGroup>
-    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <!-- Unit tests are running against EOL SDKs as well. DIsable all warnings related to EOL SDK -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>
-
-  <!-- All projects will include the defined versions automatically -->
-  <Import Project="Versions.props" />
 
   <PropertyGroup Label="Versions">
+    <!-- Default version if not specified in dotnet command -->
+    <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>
+
     <!-- Parse out parts of the version -->
     <MajorVersion Condition="'$(MajorVersion)' == ''">$(PackageVersion.Split('.')[0])</MajorVersion>
     <MinorVersion Condition="'$(MinorVersion)' == ''">$(PackageVersion.Split('.')[1])</MinorVersion>
@@ -38,7 +38,9 @@
     <PackageProjectUrl>https://github.com/zcsizmadia/ZCS.DataContractResolver</PackageProjectUrl>
     <!-- <Copyright></Copyright> -->
     <!-- <PackageIconUrl></PackageIconUrl> -->
+  </PropertyGroup>
 
+  <PropertyGroup>
     <!-- By default none of the projects are packable by "dotnet pack". Packable projects must set it to true! -->
     <IsPackable>false</IsPackable>
     <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
