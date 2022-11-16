@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  
+  <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
+	
+  <ItemGroup Label="Package Dependencies">
+    <PackageVersion Include="System.Text.Json" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Build Dependencies">
+    <PackageVersion Include="coverlet.collector" Version="3.2.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageVersion Include="Nunit" Version="3.13.3" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.3.0" />
+    <PackageVersion Include="NUnit.Analyzers" Version="3.5.0" />
+  </ItemGroup>
+</Project>

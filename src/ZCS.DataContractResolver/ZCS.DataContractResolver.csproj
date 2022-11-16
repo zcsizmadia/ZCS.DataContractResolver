@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="$(SystemTextJsonVersion)" Condition="$(TargetFramework.StartsWith('netstandard'))"/>
+    <PackageReference Include="System.Text.Json" Condition="$(TargetFramework.StartsWith('netstandard'))"/>
   </ItemGroup>
 </Project>
