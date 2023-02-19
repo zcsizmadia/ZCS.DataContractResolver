@@ -43,5 +43,5 @@ jobs:
         VERSION="${vertag[2]}"
         [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
         [[ "$VERSION" =~ ^[1-9][0-9]*\.[0-9]+\.[0-9]+(-[a-z0-9]+\.[0-9]+|)$ ]] || (echo "Incorrect version! ($VERSION)"; exit 1)
-        dotnet pack -c Release -p:PackageVersion="$VERSION" -o nupkg
+        dotnet pack -c Release -p:PackageVersion="$VERSION" -o nupkg src/ZCS.DataContractResolver/ZCS.DataContractResolver.csproj
         dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
