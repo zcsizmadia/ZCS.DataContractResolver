@@ -6,7 +6,7 @@
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
 	
   <ItemGroup Label="Package Dependencies">
-    <PackageVersion Include="System.Text.Json" Version="7.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup Label="Build Dependencies">
