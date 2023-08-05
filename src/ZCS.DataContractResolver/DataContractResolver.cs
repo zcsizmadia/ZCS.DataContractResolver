@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace System.Text.Json.Serialization.Metadata
 {
-    public class DataContractResolver : IJsonTypeInfoResolver
+    public class DataContractResolver : DefaultJsonTypeInfoResolver
     {
         private static DataContractResolver s_defaultInstance;
 
@@ -134,29 +134,20 @@ namespace System.Text.Json.Serialization.Metadata
             }
         }
 
-        public static JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
+        public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
         {
-            if (jsonTypeInfo.Kind != JsonTypeInfoKind.None)
-            {
-                jsonTypeInfo.CreateObject = () => Activator.CreateInstance(jsonTypeInfo.Type)!;
+            JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
 
-                if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
+            if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
+            {
+                jsonTypeInfo.Properties.Clear();
+                foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
                 {
-                    foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
-                    {
-                        jsonTypeInfo.Properties.Add(jsonPropertyInfo);
-                    }
+                    jsonTypeInfo.Properties.Add(jsonPropertyInfo);
                 }
             }
 
             return jsonTypeInfo;
-        }
-
-        public JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
-        {
-            JsonTypeInfo jsonTypeInfo = JsonTypeInfo.CreateJsonTypeInfo(type, options);
-
-            return GetTypeInfo(jsonTypeInfo);
         }
     }
 }

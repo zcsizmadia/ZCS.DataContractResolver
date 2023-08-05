@@ -12,6 +12,17 @@ namespace ZCS.DataContractResolver.Tests
         public int Age;
     }
 
+    public class PersonWithoutDefaultConstructor
+    {
+        public PersonWithoutDefaultConstructor(string fullName, int age)
+        {
+            FullName = fullName;
+            Age = age;
+        }
+        public string FullName { get; }
+        public int Age { get; }
+    }
+
     public class PersonWithNonPublicMember
     {
         public string FullName;
@@ -147,6 +158,22 @@ namespace ZCS.DataContractResolver.Tests
     }
 
     [DataContract]
+    public class PersonWithArray
+    {
+        [DataMember(EmitDefaultValue = false, Order = 2)]
+        public string FullName { get; set; }
+
+        [DataMember(Order = 1)]
+        public int Age { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public Person[] Friends { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public int[] Array { get; set; }
+    }
+
+    [DataContract]
     public class PersonContractWithIgnore
     {
         [DataMember(EmitDefaultValue = false)]
@@ -198,6 +225,8 @@ namespace ZCS.DataContractResolver.Tests
                 yield return new TestCaseData(ignoreCondition, new Person() { FullName = "John Doe" });
                 yield return new TestCaseData(ignoreCondition, new Person() { Age = 21 });
                 yield return new TestCaseData(ignoreCondition, new Person() { FullName = "John Doe", Age = 21 });
+
+                yield return new TestCaseData(ignoreCondition, new PersonWithoutDefaultConstructor("John Doe", 21));
 
                 yield return new TestCaseData(ignoreCondition, new PersonWithNonPublicMember());
                 yield return new TestCaseData(ignoreCondition, new PersonWithNonPublicMember() { FullName = "John Doe" });
@@ -261,6 +290,13 @@ namespace ZCS.DataContractResolver.Tests
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21 });
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Friends = new HashSet<Person> { new Person() { FullName = "John Doe", Age = 21 }, new Person() { FullName = "James Doe", Age = 22 } } });
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Set = new HashSet<int> { 0, 1, 2, 3, 4 } });
+
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray());
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe" });
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { Age = 21 });
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21 });
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Friends = new Person[] { new Person() { FullName = "John Doe", Age = 21 }, new Person() { FullName = "James Doe", Age = 22 } } });
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Array = new int[] { 0, 1, 2, 3, 4 } });
 
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore());
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore() { FullName = "John Doe" });
