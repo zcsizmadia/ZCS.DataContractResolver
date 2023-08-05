@@ -32,6 +32,7 @@
     <Owners>Zoltan Csizmadia</Owners>
     <Description>Add DataContract and DataMember support to System.Text.Json.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Json, Serialization, System.Text.Json, DataContract</PackageTags>
     <RepositoryUrl>https://github.com/zcsizmadia/ZCS.DataContractResolver</RepositoryUrl>
@@ -47,6 +48,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" PackagePath=""/>
+    <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
