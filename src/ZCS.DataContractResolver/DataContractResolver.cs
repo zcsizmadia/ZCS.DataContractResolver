@@ -136,13 +136,16 @@ namespace System.Text.Json.Serialization.Metadata
 
         public static JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
         {
-            if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
+            if (jsonTypeInfo.Kind != JsonTypeInfoKind.None)
             {
                 jsonTypeInfo.CreateObject = () => Activator.CreateInstance(jsonTypeInfo.Type)!;
 
-                foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
+                if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
                 {
-                    jsonTypeInfo.Properties.Add(jsonPropertyInfo);
+                    foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
+                    {
+                        jsonTypeInfo.Properties.Add(jsonPropertyInfo);
+                    }
                 }
             }
 
