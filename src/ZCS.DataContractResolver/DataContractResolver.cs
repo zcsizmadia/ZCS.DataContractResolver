@@ -134,13 +134,10 @@ namespace System.Text.Json.Serialization.Metadata
             }
         }
 
-        public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+        public static JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
         {
-            JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
-
             if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
             {
-                jsonTypeInfo.Properties.Clear();
                 foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
                 {
                     jsonTypeInfo.Properties.Add(jsonPropertyInfo);
@@ -148,6 +145,20 @@ namespace System.Text.Json.Serialization.Metadata
             }
 
             return jsonTypeInfo;
+        }
+
+        public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+        {
+            JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
+
+            if (jsonTypeInfo.Kind != JsonTypeInfoKind.Object)
+            {
+                return jsonTypeInfo;
+            }
+
+            jsonTypeInfo.Properties.Clear();
+
+            return GetTypeInfo(jsonTypeInfo);
         }
     }
 }
