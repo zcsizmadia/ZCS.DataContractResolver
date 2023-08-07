@@ -1,11 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace ZCS.DataContractResolver.Tests
 {
+    public enum PersonEnum
+    {
+        First,
+        Second,
+        Third,
+        Fourth
+    }
+
     public class Person
     {
         public string FullName;
@@ -207,7 +216,55 @@ namespace ZCS.DataContractResolver.Tests
 
         [DataMember(EmitDefaultValue = false)]
         public DateTime? LastLogin { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public PersonWithoutDefaultConstructor BestFriend { get; set; }
     }
+
+    [DataContract]
+    public class PersonContractWithEnum
+    {
+        [DataMember(EmitDefaultValue = false)]
+        public string FullName { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public int Age { get; set; }
+
+        [DataMember]
+        public PersonEnum Enum { get; set; }
+
+        [DataMember]
+        public Dictionary<PersonEnum, string> Dict { get; set; }
+    }
+
+    [DataContract]
+    public class PersonContractWithBasicTypes
+    {
+        public byte Byte { get; set; }
+        
+        public sbyte SByte { get; set; }
+
+        public short Short { get; set; }
+
+        public ushort UShort { get; set; }
+
+        public int Int { get; set; }
+
+        public uint UInt { get; set; }
+
+        public long Long { get; set; }
+
+        public ulong ULong { get; set; }
+
+        public float Float { get; set; }
+
+        public double Double { get; set; }
+
+        public decimal Decimal { get; set; }
+
+        public char Char { get; set; }
+    }
+
     public class DataContractResolverTests
     {
         private static System.Collections.IEnumerable TestCases()
@@ -314,6 +371,16 @@ namespace ZCS.DataContractResolver.Tests
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { Age = 21 });
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now, BestFriend = new PersonWithoutDefaultConstructor("James Doe", 20)});
+
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum());
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe" });
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { Age = 21 });
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe", Age = 21, Enum = PersonEnum.Second });
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe", Age = 21, Enum = PersonEnum.Second, Dict = new Dictionary<PersonEnum, string>() { { PersonEnum.Third, "3"}, { PersonEnum.Fourth, "4" } } });
+
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithBasicTypes());
+                yield return new TestCaseData(ignoreCondition, new PersonContractWithBasicTypes() { Byte = 1, SByte = -1, Short = -2, UShort = 2, Int = -3, UInt = 3, Long = -4, ULong = 4, Float = 1.2f, Double = 2.345, Decimal = 12.34m, Char = 'c' });
             }
         }
 
@@ -340,9 +407,13 @@ namespace ZCS.DataContractResolver.Tests
 
             // Deserialize
             T obj2 = System.Text.Json.JsonSerializer.Deserialize<T>(json, options);
+            T obj3 = JsonConvert.DeserializeObject<T>(json, newtonsoftSettings);
+            
             string jsonExpected2 = JsonConvert.SerializeObject(obj2, newtonsoftSettings);
+            string jsonExpected3 = JsonConvert.SerializeObject(obj3, newtonsoftSettings);
 
             Assert.That(json, Is.EqualTo(jsonExpected2));
+            Assert.That(json, Is.EqualTo(jsonExpected3));
         }
     }
 }
