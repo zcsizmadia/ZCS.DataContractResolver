@@ -264,6 +264,25 @@ namespace ZCS.DataContractResolver.Tests
         public char Char { get; set; }
     }
 
+    [DataContract]
+    public class Generic<T>
+    {
+        [DataMember]
+        public T Value { get; set; }
+    }
+
+    [DataContract]
+    public class GenericWithConstructor<T>
+    {
+        public GenericWithConstructor(T value)
+        {
+            Value = value;
+        }
+
+        [DataMember]
+        public T Value { get; private set; }
+    }
+
     public class DataContractResolverTests
     {
         private static System.Collections.IEnumerable TestCases()
@@ -277,6 +296,77 @@ namespace ZCS.DataContractResolver.Tests
 
             foreach (var ignoreCondition in ignoreConditions)
             {
+                yield return new TestCaseData(ignoreCondition, false);
+                yield return new TestCaseData(ignoreCondition, true);
+
+                yield return new TestCaseData(ignoreCondition, 'a');
+                yield return new TestCaseData(ignoreCondition, (byte)1);
+                yield return new TestCaseData(ignoreCondition, (sbyte)-1);
+
+                yield return new TestCaseData(ignoreCondition, Int16.MinValue);
+                yield return new TestCaseData(ignoreCondition, Int16.MaxValue);
+
+                yield return new TestCaseData(ignoreCondition, Int32.MinValue);
+                yield return new TestCaseData(ignoreCondition, Int32.MaxValue);
+
+                yield return new TestCaseData(ignoreCondition, Int64.MinValue);
+                yield return new TestCaseData(ignoreCondition, Int64.MaxValue);
+
+                yield return new TestCaseData(ignoreCondition, UInt16.MinValue);
+                yield return new TestCaseData(ignoreCondition, UInt16.MaxValue);
+
+                yield return new TestCaseData(ignoreCondition, UInt32.MinValue);
+                yield return new TestCaseData(ignoreCondition, UInt32.MaxValue);
+
+                yield return new TestCaseData(ignoreCondition, UInt64.MinValue);
+                yield return new TestCaseData(ignoreCondition, UInt64.MaxValue);
+
+                yield return new TestCaseData(ignoreCondition, 1.2m);
+
+                yield return new TestCaseData(ignoreCondition, string.Empty);
+                yield return new TestCaseData(ignoreCondition, "Hello");
+
+                yield return new TestCaseData(ignoreCondition, default(DateTime));
+                yield return new TestCaseData(ignoreCondition, DateTime.Now);
+
+                yield return new TestCaseData(ignoreCondition, default(TimeSpan));
+                yield return new TestCaseData(ignoreCondition, TimeSpan.FromSeconds(1234567890));
+
+                yield return new TestCaseData(ignoreCondition, (1, 2));
+                yield return new TestCaseData(ignoreCondition, (1, "2"));
+                yield return new TestCaseData(ignoreCondition, ("1", "2"));
+
+                yield return new TestCaseData(ignoreCondition, new KeyValuePair<int, int>(1, 2));
+                yield return new TestCaseData(ignoreCondition, new KeyValuePair<int, string>(1, "2"));
+                yield return new TestCaseData(ignoreCondition, new KeyValuePair<string, string>("1", "2"));
+
+                yield return new TestCaseData(ignoreCondition, new List<int>());
+                yield return new TestCaseData(ignoreCondition, new List<int> { 0, 1, 2, 3 });
+                yield return new TestCaseData(ignoreCondition, new List<string> { "0", "1", "2", "3" });
+
+                yield return new TestCaseData(ignoreCondition, new int[0]);
+                yield return new TestCaseData(ignoreCondition, new int[] { 0, 1, 2, 3 });
+                yield return new TestCaseData(ignoreCondition, new string[] { "0", "1", "2", "3" });
+
+                yield return new TestCaseData(ignoreCondition, new Dictionary<int, int> { { 1, 2 }, { 3, 4 } });
+                yield return new TestCaseData(ignoreCondition, new Dictionary<int, string> { { 1, "2" }, { 3, "4" } });
+                yield return new TestCaseData(ignoreCondition, new Dictionary<string, string> { { "1", "2" }, { "3", "4" } });
+
+                yield return new TestCaseData(ignoreCondition, new HashSet<int>());
+                yield return new TestCaseData(ignoreCondition, new HashSet<int> { 0, 1, 2, 3 });
+                yield return new TestCaseData(ignoreCondition, new HashSet<string> { "0", "1", "2", "3" });
+
+                yield return new TestCaseData(ignoreCondition, new Generic<int>{ Value = 1 });
+                yield return new TestCaseData(ignoreCondition, new Generic<string> { Value = "1" });
+
+                yield return new TestCaseData(ignoreCondition, new GenericWithConstructor<int>(1));
+                yield return new TestCaseData(ignoreCondition, new GenericWithConstructor<string>("1"));
+
+                yield return new TestCaseData(ignoreCondition, PersonEnum.First);
+                yield return new TestCaseData(ignoreCondition, PersonEnum.Second);
+                yield return new TestCaseData(ignoreCondition, PersonEnum.Third);
+                yield return new TestCaseData(ignoreCondition, PersonEnum.Fourth);
+
                 yield return new TestCaseData(ignoreCondition, new Person());
                 yield return new TestCaseData(ignoreCondition, new Person() { FullName = "John Doe" });
                 yield return new TestCaseData(ignoreCondition, new Person() { Age = 21 });

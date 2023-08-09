@@ -30,7 +30,7 @@ jobs:
       run: dotnet build -c Release --no-restore
 
     - name: Test
-      run: dotnet test --no-restore --logger "console;verbosity=normal"
+      run: dotnet test -c Release --no-restore
 
     - name: Pack (non-release)
       if: github.event_name != 'release'
