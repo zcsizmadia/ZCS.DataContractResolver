@@ -11,7 +11,7 @@
 
   <ItemGroup Label="Build Dependencies">
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageVersion Include="Nunit" Version="3.13.3" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.6.1" />
