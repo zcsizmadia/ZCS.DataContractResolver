@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -34,7 +35,18 @@ namespace System.Text.Json.Serialization.Metadata
 
             Type type = obj.GetType();
 
-            return type.IsValueType && FormatterServices.GetUninitializedObject(type).Equals(obj);
+            if (!type.IsValueType)
+            {
+                return false;
+            }
+
+#if NET5_0_OR_GREATER
+            return RuntimeHelpers
+#else
+            return FormatterServices
+#endif
+                .GetUninitializedObject(type)
+                .Equals(obj);
         }
 
         private static IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
@@ -123,7 +135,7 @@ namespace System.Text.Json.Serialization.Metadata
 
                 jsonPropertyInfo.Get = getValue;
                 jsonPropertyInfo.Set = setValue;
-                
+
                 if (attr != null)
                 {
                     jsonPropertyInfo.Order = attr.Order;
