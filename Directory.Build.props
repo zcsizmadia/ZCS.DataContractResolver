@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup Label="Frameworks">
     <ClassLibTargetFrameworks>netstandard2.0;net7.0</ClassLibTargetFrameworks>
-    <TestTargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TestTargetFrameworks>
+    <TestTargetFrameworks>net6.0;net7.0</TestTargetFrameworks>
     <SampleTargetFramework>net7.0</SampleTargetFramework>
 
     <!-- Unit tests are running against EOL SDKs as well. Disable all warnings related to EOL SDK -->
