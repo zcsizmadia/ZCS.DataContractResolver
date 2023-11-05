@@ -12,7 +12,7 @@
   <ItemGroup Label="Build Dependencies">
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-    <PackageVersion Include="Nunit" Version="3.13.3" />
+    <PackageVersion Include="Nunit" Version="3.14.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.9.0" />
   </ItemGroup>
