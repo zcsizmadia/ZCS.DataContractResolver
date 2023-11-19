@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup Label="Frameworks">
-    <ClassLibTargetFrameworks>netstandard2.0;net7.0;net8.0</ClassLibTargetFrameworks>
-    <TestTargetFrameworks>net6.0;net7.0;net8.0</TestTargetFrameworks>
+    <ClassLibTargetFrameworks>net7.0;net8.0</ClassLibTargetFrameworks>
+    <TestTargetFrameworks>net7.0;net8.0</TestTargetFrameworks>
     <SampleTargetFramework>net8.0</SampleTargetFramework>
 
     <!-- Unit tests are running against EOL SDKs as well. Disable all warnings related to EOL SDK -->
@@ -10,6 +10,8 @@
 
     <!-- Suppress warnings related to preview SDKs -->
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Versions">

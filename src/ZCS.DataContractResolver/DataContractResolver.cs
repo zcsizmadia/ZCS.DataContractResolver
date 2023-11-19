@@ -40,13 +40,7 @@ namespace System.Text.Json.Serialization.Metadata
                 return false;
             }
 
-#if NET5_0_OR_GREATER
-            return RuntimeHelpers
-#else
-            return FormatterServices
-#endif
-                .GetUninitializedObject(type)
-                .Equals(obj);
+            return RuntimeHelpers.GetUninitializedObject(type).Equals(obj);
         }
 
         private static IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)

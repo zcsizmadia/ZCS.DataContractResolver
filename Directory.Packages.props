@@ -5,10 +5,6 @@
   
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
 	
-  <ItemGroup Label="Package Dependencies">
-    <PackageVersion Include="System.Text.Json" Version="8.0.0" Condition="$(TargetFramework.StartsWith('netstandard'))"/>
-  </ItemGroup>
-
   <ItemGroup Label="Build Dependencies">
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />

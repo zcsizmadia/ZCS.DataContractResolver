@@ -20,15 +20,10 @@ namespace ZCS.DataContractResolver.Tests
         public int Age;
     }
 
-    public class PersonWithoutDefaultConstructor
+    public class PersonWithoutDefaultConstructor(string fullName, int age)
     {
-        public PersonWithoutDefaultConstructor(string fullName, int age)
-        {
-            FullName = fullName;
-            Age = age;
-        }
-        public string FullName { get; }
-        public int Age { get; }
+        public string FullName { get; } = fullName;
+        public int Age { get; } = age;
     }
 
     public class PersonWithNonPublicMember
@@ -272,15 +267,10 @@ namespace ZCS.DataContractResolver.Tests
     }
 
     [DataContract]
-    public class GenericWithConstructor<T>
+    public class GenericWithConstructor<T>(T value)
     {
-        public GenericWithConstructor(T value)
-        {
-            Value = value;
-        }
-
         [DataMember]
-        public T Value { get; private set; }
+        public T Value { get; private set; } = value;
     }
 
     public class DataContractResolverTests
@@ -303,23 +293,23 @@ namespace ZCS.DataContractResolver.Tests
                 yield return new TestCaseData(ignoreCondition, (byte)1);
                 yield return new TestCaseData(ignoreCondition, (sbyte)-1);
 
-                yield return new TestCaseData(ignoreCondition, Int16.MinValue);
-                yield return new TestCaseData(ignoreCondition, Int16.MaxValue);
+                yield return new TestCaseData(ignoreCondition, short.MinValue);
+                yield return new TestCaseData(ignoreCondition, short.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, Int32.MinValue);
-                yield return new TestCaseData(ignoreCondition, Int32.MaxValue);
+                yield return new TestCaseData(ignoreCondition, int.MinValue);
+                yield return new TestCaseData(ignoreCondition, int.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, Int64.MinValue);
+                yield return new TestCaseData(ignoreCondition, long.MinValue);
                 yield return new TestCaseData(ignoreCondition, Int64.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, UInt16.MinValue);
-                yield return new TestCaseData(ignoreCondition, UInt16.MaxValue);
+                yield return new TestCaseData(ignoreCondition, ushort.MinValue);
+                yield return new TestCaseData(ignoreCondition, ushort.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, UInt32.MinValue);
-                yield return new TestCaseData(ignoreCondition, UInt32.MaxValue);
+                yield return new TestCaseData(ignoreCondition, uint.MinValue);
+                yield return new TestCaseData(ignoreCondition, uint.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, UInt64.MinValue);
-                yield return new TestCaseData(ignoreCondition, UInt64.MaxValue);
+                yield return new TestCaseData(ignoreCondition, ulong.MinValue);
+                yield return new TestCaseData(ignoreCondition, ulong.MaxValue);
 
                 yield return new TestCaseData(ignoreCondition, 1.2m);
 
@@ -341,20 +331,20 @@ namespace ZCS.DataContractResolver.Tests
                 yield return new TestCaseData(ignoreCondition, new KeyValuePair<string, string>("1", "2"));
 
                 yield return new TestCaseData(ignoreCondition, new List<int>());
-                yield return new TestCaseData(ignoreCondition, new List<int> { 0, 1, 2, 3 });
-                yield return new TestCaseData(ignoreCondition, new List<string> { "0", "1", "2", "3" });
+                yield return new TestCaseData(ignoreCondition, (List<int>)[0, 1, 2, 3]);
+                yield return new TestCaseData(ignoreCondition, (List<string>)["0", "1", "2", "3"]);
 
-                yield return new TestCaseData(ignoreCondition, new int[0]);
-                yield return new TestCaseData(ignoreCondition, new int[] { 0, 1, 2, 3 });
-                yield return new TestCaseData(ignoreCondition, new string[] { "0", "1", "2", "3" });
+                yield return new TestCaseData(ignoreCondition, Array.Empty<int>());
+                yield return new TestCaseData(ignoreCondition, (int[])[0, 1, 2, 3]);
+                yield return new TestCaseData(ignoreCondition, (string[])["0", "1", "2", "3"]);
 
                 yield return new TestCaseData(ignoreCondition, new Dictionary<int, int> { { 1, 2 }, { 3, 4 } });
                 yield return new TestCaseData(ignoreCondition, new Dictionary<int, string> { { 1, "2" }, { 3, "4" } });
                 yield return new TestCaseData(ignoreCondition, new Dictionary<string, string> { { "1", "2" }, { "3", "4" } });
 
                 yield return new TestCaseData(ignoreCondition, new HashSet<int>());
-                yield return new TestCaseData(ignoreCondition, new HashSet<int> { 0, 1, 2, 3 });
-                yield return new TestCaseData(ignoreCondition, new HashSet<string> { "0", "1", "2", "3" });
+                yield return new TestCaseData(ignoreCondition, (HashSet<int>)[0, 1, 2, 3]);
+                yield return new TestCaseData(ignoreCondition, (HashSet<string>)["0", "1", "2", "3"]);
 
                 yield return new TestCaseData(ignoreCondition, new Generic<int>{ Value = 1 });
                 yield return new TestCaseData(ignoreCondition, new Generic<string> { Value = "1" });
@@ -427,22 +417,22 @@ namespace ZCS.DataContractResolver.Tests
                 yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe" });
                 yield return new TestCaseData(ignoreCondition, new PersonWithList() { Age = 21 });
                 yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, Friends = new List<Person> { new Person() { FullName = "John Doe", Age = 21 } } });
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, List = new List<int> { 0, 1, 2, 3, 4 } });
+                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }] });
+                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, List = [0, 1, 2, 3, 4] });
 
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet());
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe" });
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet() { Age = 21 });
                 yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Friends = new HashSet<Person> { new Person() { FullName = "John Doe", Age = 21 }, new Person() { FullName = "James Doe", Age = 22 } } });
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Set = new HashSet<int> { 0, 1, 2, 3, 4 } });
+                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }, new() { FullName = "James Doe", Age = 22 }] });
+                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Set = [0, 1, 2, 3, 4] });
 
                 yield return new TestCaseData(ignoreCondition, new PersonWithArray());
                 yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe" });
                 yield return new TestCaseData(ignoreCondition, new PersonWithArray() { Age = 21 });
                 yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Friends = new Person[] { new Person() { FullName = "John Doe", Age = 21 }, new Person() { FullName = "James Doe", Age = 22 } } });
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Array = new int[] { 0, 1, 2, 3, 4 } });
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }, new() { FullName = "James Doe", Age = 22 }] });
+                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Array = [0, 1, 2, 3, 4] });
 
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore());
                 yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore() { FullName = "John Doe" });
