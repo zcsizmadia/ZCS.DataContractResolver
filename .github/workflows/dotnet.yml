@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
   release:
-    types: [ published ]    
+    types: [ published ]
 
 jobs:
   build:
@@ -20,6 +20,7 @@ jobs:
         dotnet-version: |
           6.0.x
           7.0.x
+          8.0.x
 
     - name: Install dependencies
       run: dotnet restore
