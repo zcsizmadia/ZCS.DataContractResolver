@@ -4,7 +4,11 @@
   </PropertyGroup>
   
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
-	
+
+  <ItemGroup Label="Dependencies">
+    <PackageVersion Include="System.Text.Json" Version="8.0.3" Condition="$(TargetFramework.StartsWith('netstandard'))" />
+  </ItemGroup>
+
   <ItemGroup Label="Build Dependencies">
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
