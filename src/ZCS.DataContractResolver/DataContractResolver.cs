@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -40,7 +39,7 @@ namespace System.Text.Json.Serialization.Metadata
                 return false;
             }
 
-            return RuntimeHelpers.GetUninitializedObject(type).Equals(obj);
+            return Activator.CreateInstance(type).Equals(obj);
         }
 
         private static IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
