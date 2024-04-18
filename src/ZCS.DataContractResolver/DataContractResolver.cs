@@ -2,28 +2,14 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Threading;
 
 namespace System.Text.Json.Serialization.Metadata
 {
     public class DataContractResolver : DefaultJsonTypeInfoResolver
     {
-        private static DataContractResolver s_defaultInstance;
+        private static Lazy<DataContractResolver> s_defaultInstance = new(() => new DataContractResolver());
 
-        public static DataContractResolver Default
-        {
-            get
-            {
-                if (s_defaultInstance is DataContractResolver result)
-                {
-                    return result;
-                }
-
-                DataContractResolver newInstance = new();
-                DataContractResolver originalInstance = Interlocked.CompareExchange(ref s_defaultInstance, newInstance, comparand: null);
-                return originalInstance ?? newInstance;
-            }
-        }
+        public static DataContractResolver Default => s_defaultInstance.Value;
 
         private static bool IsNullOrDefault(object obj)
         {
