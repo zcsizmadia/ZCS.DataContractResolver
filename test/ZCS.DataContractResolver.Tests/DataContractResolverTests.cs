@@ -1,8 +1,9 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using NUnit.Framework;
+using System.Text.Json.Serialization;
+using Xunit;
 
 namespace ZCS.DataContractResolver.Tests
 {
@@ -34,7 +35,7 @@ namespace ZCS.DataContractResolver.Tests
 
     public class PersonWithoutContractWithDataMember
     {
-        [DataMember(Name ="full_name")]
+        [DataMember(Name = "full_name")]
         public string FullName { get; set; }
 
         [IgnoreDataMember]
@@ -235,7 +236,7 @@ namespace ZCS.DataContractResolver.Tests
     public class PersonContractWithBasicTypes
     {
         public byte Byte { get; set; }
-        
+
         public sbyte SByte { get; set; }
 
         public short Short { get; set; }
@@ -275,196 +276,201 @@ namespace ZCS.DataContractResolver.Tests
 
     public class DataContractResolverTests
     {
-        private static System.Collections.IEnumerable TestCases()
+        public static TheoryData<JsonIgnoreCondition, object> TestCases()
         {
-            var ignoreConditions = new List<System.Text.Json.Serialization.JsonIgnoreCondition>()
+            var data = new TheoryData<JsonIgnoreCondition, object>();
+
+            var ignoreConditions = new List<JsonIgnoreCondition>()
             {
-                System.Text.Json.Serialization.JsonIgnoreCondition.Never,
-                System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
-                System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                JsonIgnoreCondition.Never,
+                JsonIgnoreCondition.WhenWritingDefault,
+                JsonIgnoreCondition.WhenWritingNull
             };
 
             foreach (var ignoreCondition in ignoreConditions)
             {
-                yield return new TestCaseData(ignoreCondition, false);
-                yield return new TestCaseData(ignoreCondition, true);
+                data.Add(ignoreCondition, false);
+                data.Add(ignoreCondition, true);
 
-                yield return new TestCaseData(ignoreCondition, 'a');
-                yield return new TestCaseData(ignoreCondition, (byte)1);
-                yield return new TestCaseData(ignoreCondition, (sbyte)-1);
+                data.Add(ignoreCondition, 'a');
+                data.Add(ignoreCondition, (byte)1);
+                data.Add(ignoreCondition, (sbyte)-1);
 
-                yield return new TestCaseData(ignoreCondition, short.MinValue);
-                yield return new TestCaseData(ignoreCondition, short.MaxValue);
+                data.Add(ignoreCondition, short.MinValue);
+                data.Add(ignoreCondition, short.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, int.MinValue);
-                yield return new TestCaseData(ignoreCondition, int.MaxValue);
+                data.Add(ignoreCondition, int.MinValue);
+                data.Add(ignoreCondition, int.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, long.MinValue);
-                yield return new TestCaseData(ignoreCondition, Int64.MaxValue);
+                data.Add(ignoreCondition, long.MinValue);
+                data.Add(ignoreCondition, Int64.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, ushort.MinValue);
-                yield return new TestCaseData(ignoreCondition, ushort.MaxValue);
+                data.Add(ignoreCondition, ushort.MinValue);
+                data.Add(ignoreCondition, ushort.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, uint.MinValue);
-                yield return new TestCaseData(ignoreCondition, uint.MaxValue);
+                data.Add(ignoreCondition, uint.MinValue);
+                data.Add(ignoreCondition, uint.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, ulong.MinValue);
-                yield return new TestCaseData(ignoreCondition, ulong.MaxValue);
+                data.Add(ignoreCondition, ulong.MinValue);
+                data.Add(ignoreCondition, ulong.MaxValue);
 
-                yield return new TestCaseData(ignoreCondition, 1.2m);
+                data.Add(ignoreCondition, 1.2m);
 
-                yield return new TestCaseData(ignoreCondition, string.Empty);
-                yield return new TestCaseData(ignoreCondition, "Hello");
+                data.Add(ignoreCondition, string.Empty);
+                data.Add(ignoreCondition, "Hello");
 
-                yield return new TestCaseData(ignoreCondition, default(DateTime));
-                yield return new TestCaseData(ignoreCondition, DateTime.Now);
+                data.Add(ignoreCondition, default(DateTime));
+                data.Add(ignoreCondition, DateTime.Now);
 
-                yield return new TestCaseData(ignoreCondition, default(TimeSpan));
-                yield return new TestCaseData(ignoreCondition, TimeSpan.FromSeconds(1234567890));
+                data.Add(ignoreCondition, default(TimeSpan));
+                data.Add(ignoreCondition, TimeSpan.FromSeconds(1234567890));
 
-                yield return new TestCaseData(ignoreCondition, (1, 2));
-                yield return new TestCaseData(ignoreCondition, (1, "2"));
-                yield return new TestCaseData(ignoreCondition, ("1", "2"));
+                data.Add(ignoreCondition, (1, 2));
+                data.Add(ignoreCondition, (1, "2"));
+                data.Add(ignoreCondition, ("1", "2"));
 
-                yield return new TestCaseData(ignoreCondition, new KeyValuePair<int, int>(1, 2));
-                yield return new TestCaseData(ignoreCondition, new KeyValuePair<int, string>(1, "2"));
-                yield return new TestCaseData(ignoreCondition, new KeyValuePair<string, string>("1", "2"));
+                data.Add(ignoreCondition, new KeyValuePair<int, int>(1, 2));
+                data.Add(ignoreCondition, new KeyValuePair<int, string>(1, "2"));
+                data.Add(ignoreCondition, new KeyValuePair<string, string>("1", "2"));
 
-                yield return new TestCaseData(ignoreCondition, new List<int>());
-                yield return new TestCaseData(ignoreCondition, (List<int>)[0, 1, 2, 3]);
-                yield return new TestCaseData(ignoreCondition, (List<string>)["0", "1", "2", "3"]);
+                data.Add(ignoreCondition, new List<int>());
+                data.Add(ignoreCondition, (List<int>)[0, 1, 2, 3]);
+                data.Add(ignoreCondition, (List<string>)["0", "1", "2", "3"]);
 
-                yield return new TestCaseData(ignoreCondition, Array.Empty<int>());
-                yield return new TestCaseData(ignoreCondition, (int[])[0, 1, 2, 3]);
-                yield return new TestCaseData(ignoreCondition, (string[])["0", "1", "2", "3"]);
+                data.Add(ignoreCondition, Array.Empty<int>());
+                data.Add(ignoreCondition, (int[])[0, 1, 2, 3]);
+                data.Add(ignoreCondition, (string[])["0", "1", "2", "3"]);
 
-                yield return new TestCaseData(ignoreCondition, new Dictionary<int, int> { { 1, 2 }, { 3, 4 } });
-                yield return new TestCaseData(ignoreCondition, new Dictionary<int, string> { { 1, "2" }, { 3, "4" } });
-                yield return new TestCaseData(ignoreCondition, new Dictionary<string, string> { { "1", "2" }, { "3", "4" } });
+                data.Add(ignoreCondition, new Dictionary<int, int> { { 1, 2 }, { 3, 4 } });
+                data.Add(ignoreCondition, new Dictionary<int, string> { { 1, "2" }, { 3, "4" } });
+                data.Add(ignoreCondition, new Dictionary<string, string> { { "1", "2" }, { "3", "4" } });
 
-                yield return new TestCaseData(ignoreCondition, new HashSet<int>());
-                yield return new TestCaseData(ignoreCondition, (HashSet<int>)[0, 1, 2, 3]);
-                yield return new TestCaseData(ignoreCondition, (HashSet<string>)["0", "1", "2", "3"]);
+                data.Add(ignoreCondition, new HashSet<int>());
+                data.Add(ignoreCondition, (HashSet<int>)[0, 1, 2, 3]);
+                data.Add(ignoreCondition, (HashSet<string>)["0", "1", "2", "3"]);
 
-                yield return new TestCaseData(ignoreCondition, new Generic<int>{ Value = 1 });
-                yield return new TestCaseData(ignoreCondition, new Generic<string> { Value = "1" });
+                data.Add(ignoreCondition, new Generic<int>{ Value = 1 });
+                data.Add(ignoreCondition, new Generic<string> { Value = "1" });
 
-                yield return new TestCaseData(ignoreCondition, new GenericWithConstructor<int>(1));
-                yield return new TestCaseData(ignoreCondition, new GenericWithConstructor<string>("1"));
+                data.Add(ignoreCondition, new GenericWithConstructor<int>(1));
+                data.Add(ignoreCondition, new GenericWithConstructor<string>("1"));
 
-                yield return new TestCaseData(ignoreCondition, PersonEnum.First);
-                yield return new TestCaseData(ignoreCondition, PersonEnum.Second);
-                yield return new TestCaseData(ignoreCondition, PersonEnum.Third);
-                yield return new TestCaseData(ignoreCondition, PersonEnum.Fourth);
+                data.Add(ignoreCondition, PersonEnum.First);
+                data.Add(ignoreCondition, PersonEnum.Second);
+                data.Add(ignoreCondition, PersonEnum.Third);
+                data.Add(ignoreCondition, PersonEnum.Fourth);
 
-                yield return new TestCaseData(ignoreCondition, new Person());
-                yield return new TestCaseData(ignoreCondition, new Person() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new Person() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new Person() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new Person());
+                data.Add(ignoreCondition, new Person() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new Person() { Age = 21 });
+                data.Add(ignoreCondition, new Person() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithoutDefaultConstructor("John Doe", 21));
+                data.Add(ignoreCondition, new PersonWithoutDefaultConstructor("John Doe", 21));
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithNonPublicMember());
-                yield return new TestCaseData(ignoreCondition, new PersonWithNonPublicMember() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithNonPublicMember());
+                data.Add(ignoreCondition, new PersonWithNonPublicMember() { FullName = "John Doe" });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithoutDataMember());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithoutDataMember() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractWithoutDataMember());
+                data.Add(ignoreCondition, new PersonContractWithoutDataMember() { FullName = "John Doe" });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithIgnore());
-                yield return new TestCaseData(ignoreCondition, new PersonWithIgnore() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonWithIgnore() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithIgnore() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonWithIgnore());
+                data.Add(ignoreCondition, new PersonWithIgnore() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithIgnore() { Age = 21 });
+                data.Add(ignoreCondition, new PersonWithIgnore() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithoutContractWithDataMember());
-                yield return new TestCaseData(ignoreCondition, new PersonWithoutContractWithDataMember() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonWithoutContractWithDataMember() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithoutContractWithDataMember() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonWithoutContractWithDataMember());
+                data.Add(ignoreCondition, new PersonWithoutContractWithDataMember() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithoutContractWithDataMember() { Age = 21 });
+                data.Add(ignoreCondition, new PersonWithoutContractWithDataMember() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonGetSet());
-                yield return new TestCaseData(ignoreCondition, new PersonGetSet() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonGetSet() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonGetSet() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonGetSet());
+                data.Add(ignoreCondition, new PersonGetSet() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonGetSet() { Age = 21 });
+                data.Add(ignoreCondition, new PersonGetSet() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContract());
-                yield return new TestCaseData(ignoreCondition, new PersonContract() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContract() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContract() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonContract());
+                data.Add(ignoreCondition, new PersonContract() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContract() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContract() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractMemberGetter());
-                yield return new TestCaseData(ignoreCondition, new PersonContractMemberGetter() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractMemberGetter());
+                data.Add(ignoreCondition, new PersonContractMemberGetter() { FullName = "John Doe" });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNonPublicMember());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNonPublicMember() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractWithNonPublicMember());
+                data.Add(ignoreCondition, new PersonContractWithNonPublicMember() { FullName = "John Doe" });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractOverrideName());
-                yield return new TestCaseData(ignoreCondition, new PersonContractOverrideName() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContractOverrideName() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContractOverrideName() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonContractOverrideName());
+                data.Add(ignoreCondition, new PersonContractOverrideName() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractOverrideName() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContractOverrideName() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractOrdered());
-                yield return new TestCaseData(ignoreCondition, new PersonContractOrdered() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContractOrdered() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContractOrdered() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonContractOrdered());
+                data.Add(ignoreCondition, new PersonContractOrdered() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractOrdered() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContractOrdered() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithDictionary());
-                yield return new TestCaseData(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonWithDictionary() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe", Age = 21, Friends = new Dictionary<int, Person> { { 1, new Person() { FullName = "John Doe", Age = 21 } }, { 2, new Person() { FullName = "James Doe", Age = 22 } } } });
-                yield return new TestCaseData(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe", Age = 21, Dict = new Dictionary<string, string> { { "Key1", "Value1" }, { "Key2", "Value2" } } });
+                data.Add(ignoreCondition, new PersonWithDictionary());
+                data.Add(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithDictionary() { Age = 21 });
+                data.Add(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe", Age = 21, Friends = new Dictionary<int, Person> { { 1, new Person() { FullName = "John Doe", Age = 21 } }, { 2, new Person() { FullName = "James Doe", Age = 22 } } } });
+                data.Add(ignoreCondition, new PersonWithDictionary() { FullName = "John Doe", Age = 21, Dict = new Dictionary<string, string> { { "Key1", "Value1" }, { "Key2", "Value2" } } });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithList());
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }] });
-                yield return new TestCaseData(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, List = [0, 1, 2, 3, 4] });
+                data.Add(ignoreCondition, new PersonWithList());
+                data.Add(ignoreCondition, new PersonWithList() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithList() { Age = 21 });
+                data.Add(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }] });
+                data.Add(ignoreCondition, new PersonWithList() { FullName = "John Doe", Age = 21, List = [0, 1, 2, 3, 4] });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet());
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }, new() { FullName = "James Doe", Age = 22 }] });
-                yield return new TestCaseData(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Set = [0, 1, 2, 3, 4] });
+                data.Add(ignoreCondition, new PersonWithSet());
+                data.Add(ignoreCondition, new PersonWithSet() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithSet() { Age = 21 });
+                data.Add(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }, new() { FullName = "James Doe", Age = 22 }] });
+                data.Add(ignoreCondition, new PersonWithSet() { FullName = "John Doe", Age = 21, Set = [0, 1, 2, 3, 4] });
 
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray());
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }, new() { FullName = "James Doe", Age = 22 }] });
-                yield return new TestCaseData(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Array = [0, 1, 2, 3, 4] });
+                data.Add(ignoreCondition, new PersonWithArray());
+                data.Add(ignoreCondition, new PersonWithArray() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonWithArray() { Age = 21 });
+                data.Add(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Friends = [new() { FullName = "John Doe", Age = 21 }, new() { FullName = "James Doe", Age = 22 }] });
+                data.Add(ignoreCondition, new PersonWithArray() { FullName = "John Doe", Age = 21, Array = [0, 1, 2, 3, 4] });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithIgnore() { FullName = "John Doe", Age = 21 });
+                data.Add(ignoreCondition, new PersonContractWithIgnore());
+                data.Add(ignoreCondition, new PersonContractWithIgnore() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractWithIgnore() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContractWithIgnore() { FullName = "John Doe", Age = 21 });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithStruct());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithStruct() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithStruct() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithStruct() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithStruct() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
+                data.Add(ignoreCondition, new PersonContractWithStruct());
+                data.Add(ignoreCondition, new PersonContractWithStruct() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractWithStruct() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContractWithStruct() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
+                data.Add(ignoreCondition, new PersonContractWithStruct() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now, BestFriend = new PersonWithoutDefaultConstructor("James Doe", 20)});
+                data.Add(ignoreCondition, new PersonContractWithNullable());
+                data.Add(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractWithNullable() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.UtcNow });
+                data.Add(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now });
+                data.Add(ignoreCondition, new PersonContractWithNullable() { FullName = "John Doe", Age = 21, LastLogin = DateTime.Now, BestFriend = new PersonWithoutDefaultConstructor("James Doe", 20)});
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe" });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { Age = 21 });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe", Age = 21, Enum = PersonEnum.Second });
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe", Age = 21, Enum = PersonEnum.Second, Dict = new Dictionary<PersonEnum, string>() { { PersonEnum.Third, "3"}, { PersonEnum.Fourth, "4" } } });
+                data.Add(ignoreCondition, new PersonContractWithEnum());
+                data.Add(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe" });
+                data.Add(ignoreCondition, new PersonContractWithEnum() { Age = 21 });
+                data.Add(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe", Age = 21, Enum = PersonEnum.Second });
+                data.Add(ignoreCondition, new PersonContractWithEnum() { FullName = "John Doe", Age = 21, Enum = PersonEnum.Second, Dict = new Dictionary<PersonEnum, string>() { { PersonEnum.Third, "3"}, { PersonEnum.Fourth, "4" } } });
 
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithBasicTypes());
-                yield return new TestCaseData(ignoreCondition, new PersonContractWithBasicTypes() { Byte = 1, SByte = -1, Short = -2, UShort = 2, Int = -3, UInt = 3, Long = -4, ULong = 4, Float = 1.2f, Double = 2.345, Decimal = 12.34m, Char = 'c' });
+                data.Add(ignoreCondition, new PersonContractWithBasicTypes());
+                data.Add(ignoreCondition, new PersonContractWithBasicTypes() { Byte = 1, SByte = -1, Short = -2, UShort = 2, Int = -3, UInt = 3, Long = -4, ULong = 4, Float = 1.2f, Double = 2.345, Decimal = 12.34m, Char = 'c' });
             }
+
+            return data;
         }
 
-        [TestCaseSource(nameof(TestCases))]
-        public void Tests<T>(System.Text.Json.Serialization.JsonIgnoreCondition ignoreCondition, T obj)
+        [Theory]
+        [MemberData(nameof(TestCases))]
+        public void Tests<T>(JsonIgnoreCondition ignoreCondition, T obj)
         {
             var options = new System.Text.Json.JsonSerializerOptions()
             {
@@ -474,25 +480,25 @@ namespace ZCS.DataContractResolver.Tests
 
             var newtonsoftSettings = new JsonSerializerSettings()
             {
-                DefaultValueHandling = ignoreCondition == System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault ? DefaultValueHandling.Ignore : DefaultValueHandling.Include,
-                NullValueHandling = ignoreCondition == System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull ? NullValueHandling.Ignore : NullValueHandling.Include
+                DefaultValueHandling = ignoreCondition == JsonIgnoreCondition.WhenWritingDefault ? DefaultValueHandling.Ignore : DefaultValueHandling.Include,
+                NullValueHandling = ignoreCondition == JsonIgnoreCondition.WhenWritingNull ? NullValueHandling.Ignore : NullValueHandling.Include
             };
 
             // Serialize
             string json = System.Text.Json.JsonSerializer.Serialize(obj, options);
             string jsonExpected = JsonConvert.SerializeObject(obj, newtonsoftSettings);
 
-            Assert.That(json, Is.EqualTo(jsonExpected));
+            Assert.Equal(json, jsonExpected);
 
             // Deserialize
             T obj2 = System.Text.Json.JsonSerializer.Deserialize<T>(json, options);
             T obj3 = JsonConvert.DeserializeObject<T>(json, newtonsoftSettings);
-            
+
             string jsonExpected2 = JsonConvert.SerializeObject(obj2, newtonsoftSettings);
             string jsonExpected3 = JsonConvert.SerializeObject(obj3, newtonsoftSettings);
 
-            Assert.That(json, Is.EqualTo(jsonExpected2));
-            Assert.That(json, Is.EqualTo(jsonExpected3));
+            Assert.Equal(json, jsonExpected2);
+            Assert.Equal(json, jsonExpected3);
         }
     }
 }
