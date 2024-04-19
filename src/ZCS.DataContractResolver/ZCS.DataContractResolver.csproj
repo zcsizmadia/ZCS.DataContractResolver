@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>$(ClassLibTargetFrameworks)</TargetFrameworks>
     <LangVersion>latest</LangVersion>
@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Condition="$(TargetFramework.StartsWith('netstandard'))"/>
+    <PackageReference Include="System.ComponentModel.Annotations" Condition="$(TargetFramework.StartsWith('netstandard'))" />
+    <PackageReference Include="System.Text.Json" Condition="$(TargetFramework.StartsWith('netstandard'))" />
   </ItemGroup>
 </Project>
