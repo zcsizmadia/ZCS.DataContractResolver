@@ -513,13 +513,25 @@ public class ContractResolverTests
     {
         var options = new JsonSerializerOptions()
         {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
         };
 
         var json = JsonSerializer.Serialize(new RequiredObject { AllowNullProperty = "Test" }, options);
 
         Assert.Contains("AllowNullProperty", json);
+    }
+
+    [Fact]
+    public void SerializeClassWithoutRequiredObject()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        const string json = "{}";
+
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<RequiredObject>(json, options));
     }
 
     [Fact]
