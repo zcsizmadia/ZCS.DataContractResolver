@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -85,7 +85,7 @@ namespace System.Text.Json.Serialization.Metadata
                     propertyName = attr?.Name ?? fieldInfo.Name;
                     propertyType = fieldInfo.FieldType;
                     getValue = fieldInfo.GetValue;
-                    setValue = (obj, value) => fieldInfo.SetValue(obj, value);
+                    setValue = fieldInfo.SetValue;
                 }
                 else
                 if (memberInfo.MemberType == MemberTypes.Property && memberInfo is PropertyInfo propertyInfo)
@@ -98,7 +98,7 @@ namespace System.Text.Json.Serialization.Metadata
                     }
                     if (propertyInfo.CanWrite)
                     {
-                        setValue = (obj, value) => propertyInfo.SetValue(obj, value);
+                        setValue = propertyInfo.SetValue;
                     }
                 }
                 else
