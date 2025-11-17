@@ -5,12 +5,12 @@
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
   <ItemGroup Label="Dependencies">
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" Condition="$(TargetFramework.StartsWith('netstandard'))" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.1" Condition="$(TargetFramework.StartsWith('netstandard'))" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.0" Condition="$(TargetFramework.StartsWith('netstandard'))" />
   </ItemGroup>
   <ItemGroup Label="Build Dependencies">
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
 </Project>
