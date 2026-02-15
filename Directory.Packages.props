@@ -5,7 +5,7 @@
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
   <ItemGroup Label="Dependencies">
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" Condition="$(TargetFramework.StartsWith('netstandard'))" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.2" Condition="$(TargetFramework.StartsWith('netstandard'))" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.3" Condition="$(TargetFramework.StartsWith('netstandard'))" />
   </ItemGroup>
   <ItemGroup Label="Build Dependencies">
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
