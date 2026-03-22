@@ -6,13 +6,29 @@ using System.Runtime.Serialization;
 
 namespace System.Text.Json.Serialization.Metadata
 {
+    /// <summary>
+    /// A <see cref="DefaultJsonTypeInfoResolver"/> that adds support for
+    /// <see cref="DataContractAttribute"/>, <see cref="DataMemberAttribute"/>,
+    /// and <see cref="IgnoreDataMemberAttribute"/> when serializing and deserializing
+    /// objects with <see cref="System.Text.Json.JsonSerializer"/>.
+    /// </summary>
+    /// <remarks>
+    /// When a type is annotated with <see cref="DataContractAttribute"/>, only members
+    /// annotated with <see cref="DataMemberAttribute"/> are included in serialization.
+    /// Non-public members are also eligible when <see cref="DataContractAttribute"/> is present.
+    /// For types without <see cref="DataContractAttribute"/>, members annotated with
+    /// <see cref="IgnoreDataMemberAttribute"/> are excluded.
+    /// </remarks>
     public class DataContractResolver : DefaultJsonTypeInfoResolver
     {
-        private static Lazy<DataContractResolver> s_defaultInstance = new(() => new DataContractResolver());
+        private static readonly Lazy<DataContractResolver> s_defaultInstance = new(() => new DataContractResolver());
 
+        /// <summary>
+        /// Gets the shared default instance of <see cref="DataContractResolver"/>.
+        /// </summary>
         public static DataContractResolver Default => s_defaultInstance.Value;
 
-        private static bool IsNullOrDefault(object obj)
+        private static bool IsNullOrDefault(object? obj)
         {
             if (obj is null)
             {
@@ -26,7 +42,8 @@ namespace System.Text.Json.Serialization.Metadata
                 return false;
             }
 
-            return Activator.CreateInstance(type).Equals(obj);
+            object? defaultValue = Activator.CreateInstance(type);
+            return defaultValue is null || defaultValue.Equals(obj);
         }
 
         private static IEnumerable<MemberInfo> EnumerateFieldsAndProperties(Type type, BindingFlags bindingFlags)
@@ -54,12 +71,7 @@ namespace System.Text.Json.Serialization.Metadata
 
             foreach (MemberInfo memberInfo in EnumerateFieldsAndProperties(jsonTypeInfo.Type, bindingFlags))
             {
-                if (memberInfo == null)
-                {
-                    continue;
-                }
-
-                DataMemberAttribute attr = null;
+                DataMemberAttribute? attr = null;
                 if (isDataContract)
                 {
                     attr = memberInfo.GetCustomAttribute<DataMemberAttribute>();
@@ -76,10 +88,10 @@ namespace System.Text.Json.Serialization.Metadata
                     }
                 }
 
-                Func<object, object> getValue = null;
-                Action<object, object> setValue = null;
-                Type propertyType = null;
-                string propertyName = null;
+                Func<object, object?>? getValue = null;
+                Action<object, object?>? setValue = null;
+                Type? propertyType;
+                string? propertyName;
 
                 if (memberInfo.MemberType == MemberTypes.Field && memberInfo is FieldInfo fieldInfo)
                 {
@@ -108,10 +120,6 @@ namespace System.Text.Json.Serialization.Metadata
                 }
 
                 JsonPropertyInfo jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(propertyType, propertyName);
-                if (jsonPropertyInfo == null)
-                {
-                    continue;
-                }
 
                 jsonPropertyInfo.Get = getValue;
                 jsonPropertyInfo.Set = setValue;
@@ -122,7 +130,7 @@ namespace System.Text.Json.Serialization.Metadata
                     jsonPropertyInfo.Order = attr.Order;
                     jsonPropertyInfo.ShouldSerialize = !attr.EmitDefaultValue ? ((_, obj) => !IsNullOrDefault(obj)) : null;
                 }
-                
+
                 if (!jsonPropertyInfo.IsRequired)
                 {
                     var requiredAttr = memberInfo.GetCustomAttribute<RequiredAttribute>();
@@ -136,8 +144,23 @@ namespace System.Text.Json.Serialization.Metadata
             }
         }
 
+        /// <summary>
+        /// Modifies the provided <paramref name="jsonTypeInfo"/> by replacing its properties
+        /// with those derived from <see cref="DataMemberAttribute"/> or
+        /// <see cref="IgnoreDataMemberAttribute"/> annotations.
+        /// </summary>
+        /// <param name="jsonTypeInfo">The <see cref="JsonTypeInfo"/> to modify.</param>
+        /// <returns>The modified <paramref name="jsonTypeInfo"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="jsonTypeInfo"/> is <see langword="null"/>.
+        /// </exception>
         public static JsonTypeInfo GetTypeInfo(JsonTypeInfo jsonTypeInfo)
         {
+            if (jsonTypeInfo is null)
+            {
+                throw new ArgumentNullException(nameof(jsonTypeInfo));
+            }
+
             if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object)
             {
                 foreach (var jsonPropertyInfo in CreateDataMembers(jsonTypeInfo).OrderBy((x) => x.Order))
@@ -149,8 +172,22 @@ namespace System.Text.Json.Serialization.Metadata
             return jsonTypeInfo;
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="type"/> or <paramref name="options"/> is <see langword="null"/>.
+        /// </exception>
         public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
 
             if (jsonTypeInfo.Kind != JsonTypeInfoKind.Object)

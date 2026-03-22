@@ -565,4 +565,80 @@ public class ContractResolverTests
             return JsonSerializer.Deserialize<Regex>(json, options);
         });
     }
+
+    [Fact]
+    public void GetTypeInfo_NullJsonTypeInfo_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            System.Text.Json.Serialization.Metadata.DataContractResolver.GetTypeInfo(null!));
+    }
+
+    [Fact]
+    public void GetTypeInfo_NullType_ThrowsArgumentNullException()
+    {
+        var resolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default;
+        var options = new JsonSerializerOptions();
+
+        Assert.Throws<ArgumentNullException>(() => resolver.GetTypeInfo(null!, options));
+    }
+
+    [Fact]
+    public void GetTypeInfo_NullOptions_ThrowsArgumentNullException()
+    {
+        var resolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default;
+
+        Assert.Throws<ArgumentNullException>(() => resolver.GetTypeInfo(typeof(object), null!));
+    }
+
+    [DataContract]
+    public class StructWithEmitDefaultValue
+    {
+        [DataMember(EmitDefaultValue = false)]
+        public int IntValue { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public double DoubleValue { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public bool BoolValue { get; set; }
+    }
+
+    [Fact]
+    public void SerializeStruct_EmitDefaultValue_False_OmitsDefaultValueTypes()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new StructWithEmitDefaultValue();
+        var json = JsonSerializer.Serialize(obj, options);
+
+        Assert.Equal("{}", json);
+    }
+
+    [Fact]
+    public void SerializeStruct_EmitDefaultValue_False_IncludesNonDefaultValueTypes()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new StructWithEmitDefaultValue { IntValue = 42, DoubleValue = 3.14, BoolValue = true };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        Assert.Contains("IntValue", json);
+        Assert.Contains("DoubleValue", json);
+        Assert.Contains("BoolValue", json);
+    }
+
+    [Fact]
+    public void Default_ReturnsSameInstance()
+    {
+        var first = System.Text.Json.Serialization.Metadata.DataContractResolver.Default;
+        var second = System.Text.Json.Serialization.Metadata.DataContractResolver.Default;
+
+        Assert.Same(first, second);
+    }
 }

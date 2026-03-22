@@ -3,6 +3,8 @@
     <TargetFrameworks>$(ClassLibTargetFrameworks)</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
