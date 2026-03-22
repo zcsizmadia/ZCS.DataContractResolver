@@ -641,4 +641,261 @@ public class ContractResolverTests
 
         Assert.Same(first, second);
     }
+
+    // ---- Inheritance tests ----
+
+    [DataContract]
+    public class BasePersonContract
+    {
+        [DataMember(Name = "base_name")]
+        public string Name { get; set; }
+    }
+
+    [DataContract]
+    public class DerivedPersonContract : BasePersonContract
+    {
+        [DataMember(Name = "dept")]
+        public string Department { get; set; }
+    }
+
+    [Fact]
+    public void SerializeInheritedDataContractClass_IncludesBaseClassDataMembers()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new DerivedPersonContract { Name = "John", Department = "IT" };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        Assert.Contains("base_name", json);
+        Assert.Contains("John", json);
+        Assert.Contains("dept", json);
+        Assert.Contains("IT", json);
+
+        var deserialized = JsonSerializer.Deserialize<DerivedPersonContract>(json, options);
+        Assert.Equal("John", deserialized.Name);
+        Assert.Equal("IT", deserialized.Department);
+    }
+
+    public class DerivedPersonWithoutContract : BasePersonContract
+    {
+        public string Department { get; set; }
+    }
+
+    [Fact]
+    public void SerializeInheritedDataContractClass_DerivedWithoutDataContract_UsesNonDataContractMode()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new DerivedPersonWithoutContract { Name = "John", Department = "IT" };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        // Without DataContract on derived, all public members are included using their declared names
+        Assert.Contains("Department", json);
+        Assert.Contains("IT", json);
+        // Name is inherited from BasePersonContract (public property)
+        Assert.Contains("Name", json);
+        Assert.Contains("John", json);
+    }
+
+    // ---- DataMember(IsRequired = true) tests ----
+
+    [DataContract]
+    public class ClassWithRequiredDataMember
+    {
+        [DataMember(IsRequired = true)]
+        public string Name { get; set; }
+
+        [DataMember]
+        public int Age { get; set; }
+    }
+
+    [Fact]
+    public void DeserializeClassWithDataMemberIsRequired_MissingProperty_ThrowsJsonException()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<ClassWithRequiredDataMember>("{}", options));
+    }
+
+    [Fact]
+    public void SerializeClassWithDataMemberIsRequired_PresentProperty_Succeeds()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new ClassWithRequiredDataMember { Name = "Test", Age = 30 };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        Assert.Contains("Name", json);
+        Assert.Contains("Test", json);
+
+        var deserialized = JsonSerializer.Deserialize<ClassWithRequiredDataMember>(json, options);
+        Assert.Equal("Test", deserialized.Name);
+        Assert.Equal(30, deserialized.Age);
+    }
+
+    // ---- Write-only property tests ----
+
+    [DataContract]
+    public class ClassWithWriteOnlyProperty
+    {
+        private string _secret;
+
+        [DataMember]
+        public string WriteOnly
+        {
+            set { _secret = value; }
+        }
+
+        [DataMember]
+        public string ReadWrite { get; set; }
+
+        public string GetSecret() => _secret;
+    }
+
+    [Fact]
+    public void SerializeClassWithWriteOnlyProperty_WriteOnlyExcludedFromOutput()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new ClassWithWriteOnlyProperty { ReadWrite = "visible" };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        // Write-only property has no getter, so it must not appear in the serialized output
+        Assert.DoesNotContain("WriteOnly", json);
+        Assert.Contains("ReadWrite", json);
+        Assert.Contains("visible", json);
+    }
+
+    [Fact]
+    public void DeserializeClassWithWriteOnlyProperty_SetsPropertyValue()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = JsonSerializer.Deserialize<ClassWithWriteOnlyProperty>(@"{""WriteOnly"":""secret"",""ReadWrite"":""visible""}", options);
+
+        Assert.Equal("secret", obj.GetSecret());
+        Assert.Equal("visible", obj.ReadWrite);
+    }
+
+    // ---- Static member exclusion test ----
+
+    [DataContract]
+    public class ClassWithStaticMember
+    {
+        [DataMember]
+        public string Name { get; set; }
+
+        // Static members are not returned by GetProperties/GetFields with BindingFlags.Instance,
+        // so they should never appear in the serialized output.
+        [DataMember]
+        public static string StaticName { get; set; } = "static_value";
+    }
+
+    [Fact]
+    public void SerializeClassWithStaticMember_StaticMembersAreExcluded()
+    {
+        ClassWithStaticMember.StaticName = "should_not_appear";
+
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new ClassWithStaticMember { Name = "instance_value" };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        Assert.Contains("instance_value", json);
+        Assert.DoesNotContain("should_not_appear", json);
+        Assert.DoesNotContain("StaticName", json);
+    }
+
+    // ---- DataMember.Order with non-sequential values test ----
+
+    [DataContract]
+    public class ClassWithNonSequentialOrder
+    {
+        // Declared in reverse order; Order values are non-sequential to test sort correctness
+        [DataMember(Order = 10)]
+        public string Third { get; set; }
+
+        [DataMember(Order = 0)]
+        public string First { get; set; }
+
+        [DataMember(Order = 5)]
+        public string Second { get; set; }
+    }
+
+    [Fact]
+    public void SerializeClassWithNonSequentialOrder_OrderIsPreserved()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        var obj = new ClassWithNonSequentialOrder { First = "first", Second = "second", Third = "third" };
+        var json = JsonSerializer.Serialize(obj, options);
+
+        int firstPos = json.IndexOf("First", StringComparison.Ordinal);
+        int secondPos = json.IndexOf("Second", StringComparison.Ordinal);
+        int thirdPos = json.IndexOf("Third", StringComparison.Ordinal);
+
+        Assert.True(firstPos < secondPos, "First (Order = 0) should appear before Second (Order = 5)");
+        Assert.True(secondPos < thirdPos, "Second (Order = 5) should appear before Third (Order = 10)");
+    }
+
+    // ---- GetTypeInfo with non-Object kind test ----
+
+    [Fact]
+    public void GetTypeInfo_NonObjectKind_ReturnsTypeInfoUnchanged()
+    {
+        var resolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default;
+        var options = new JsonSerializerOptions { TypeInfoResolver = resolver };
+
+        // List<int> has Kind = Enumerable (not Object), so static GetTypeInfo should return it unchanged
+        var listTypeInfo = resolver.GetTypeInfo(typeof(List<int>), options);
+        Assert.NotEqual(System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object, listTypeInfo.Kind);
+
+        var result = System.Text.Json.Serialization.Metadata.DataContractResolver.GetTypeInfo(listTypeInfo);
+        Assert.Same(listTypeInfo, result);
+    }
+
+    // ---- DataMember(IsRequired) on non-DataContract type has no effect test ----
+
+    public class ClassWithDataMemberIsRequiredWithoutDataContract
+    {
+        [DataMember(IsRequired = true)]
+        public string Name { get; set; }
+    }
+
+    [Fact]
+    public void DeserializeClassWithDataMemberIsRequired_WithoutDataContract_NoRequiredEffect()
+    {
+        var options = new JsonSerializerOptions()
+        {
+            TypeInfoResolver = System.Text.Json.Serialization.Metadata.DataContractResolver.Default,
+        };
+
+        // Without [DataContract], DataMember(IsRequired=true) is not processed; missing property does NOT throw
+        var obj = JsonSerializer.Deserialize<ClassWithDataMemberIsRequiredWithoutDataContract>("{}", options);
+        Assert.Null(obj.Name);
+    }
 }
