@@ -334,20 +334,20 @@ namespace ZCS.DataContractResolver.Tests
                 data.Add(ignoreCondition, new KeyValuePair<string, string>("1", "2"));
 
                 data.Add(ignoreCondition, new List<int>());
-                data.Add(ignoreCondition, (List<int>)[0, 1, 2, 3]);
-                data.Add(ignoreCondition, (List<string>)["0", "1", "2", "3"]);
+                data.Add(ignoreCondition, new List<int> { 0, 1, 2, 3 });
+                data.Add(ignoreCondition, new List<string> { "0", "1", "2", "3" });
 
                 data.Add(ignoreCondition, Array.Empty<int>());
-                data.Add(ignoreCondition, (int[])[0, 1, 2, 3]);
-                data.Add(ignoreCondition, (string[])["0", "1", "2", "3"]);
+                data.Add(ignoreCondition, new int[] { 0, 1, 2, 3 });
+                data.Add(ignoreCondition, new string[] { "0", "1", "2", "3" });
 
                 data.Add(ignoreCondition, new Dictionary<int, int> { { 1, 2 }, { 3, 4 } });
                 data.Add(ignoreCondition, new Dictionary<int, string> { { 1, "2" }, { 3, "4" } });
                 data.Add(ignoreCondition, new Dictionary<string, string> { { "1", "2" }, { "3", "4" } });
 
                 data.Add(ignoreCondition, new HashSet<int>());
-                data.Add(ignoreCondition, (HashSet<int>)[0, 1, 2, 3]);
-                data.Add(ignoreCondition, (HashSet<string>)["0", "1", "2", "3"]);
+                data.Add(ignoreCondition, new HashSet<int> { 0, 1, 2, 3 });
+                data.Add(ignoreCondition, new HashSet<string> { "0", "1", "2", "3" });
 
                 data.Add(ignoreCondition, new Generic<int>{ Value = 1 });
                 data.Add(ignoreCondition, new Generic<string> { Value = "1" });
